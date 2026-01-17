@@ -3,6 +3,7 @@ import subprocess
 import time
 import sys
 import signal
+import argparse
 
 
 def run_command(command, env=None):
@@ -11,6 +12,14 @@ def run_command(command, env=None):
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Launch the DigitalEngn infrastructure."
+    )
+    parser.add_argument(
+        "--build", action="store_true", help="Build container images before launching."
+    )
+    args = parser.parse_args()
+
     # Add ~/bin to PATH for subprocess calls (as seen in smoke_test_steps.py)
     env = os.environ.copy()
     home_bin = os.path.expanduser("~/bin")
@@ -40,6 +49,11 @@ def main():
             run_command(["minikube", "start"], env=env)
         else:
             print("Minikube is already running.")
+
+        # Build images if requested
+        if args.build:
+            print("\n--- Performing requested container builds ---")
+            run_command(["uv", "run", "build"], env=env)
 
         # Ensure ingress addon is enabled
         print("Enabling ingress addon...")
@@ -94,6 +108,60 @@ def main():
         # Apply kustomization
         print("Applying infrastructure configuration...")
         run_command(["kubectl", "apply", "-k", "infrastructure/k8s/base"], env=env)
+
+        # Wait for all pods to be ready
+        print("\nWaiting for all pods to be ready (Running or Completed)...")
+        while True:
+            result = subprocess.run(
+                ["kubectl", "get", "pods", "-A"],
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+
+            lines = result.stdout.strip().split("\n")
+            if len(lines) > 1:
+                print("\n--- Current Pod Status ---")
+                print(result.stdout)
+
+                all_ready = True
+                # Skip header line
+                for line in lines[1:]:
+                    parts = line.split()
+                    if len(parts) < 4:
+                        continue
+
+                    ready_status = parts[2]
+                    status = parts[3]
+
+                    # Jobs that have finished successfully
+                    if status in ["Completed", "Succeeded"]:
+                        continue
+
+                    # Pods must be Running
+                    if status != "Running":
+                        all_ready = False
+                        break
+
+                    # If Running, check if all containers are ready (e.g., 1/1)
+                    if "/" in ready_status:
+                        try:
+                            ready_count, total_count = ready_status.split("/")
+                            if ready_count != total_count:
+                                all_ready = False
+                                break
+                        except ValueError:
+                            all_ready = False
+                            break
+
+                if all_ready:
+                    print("\nAll pods are ready.")
+                    break
+            else:
+                print("No pods found yet, waiting...")
+
+            print("Still waiting for pods to initialize (checking again in 5s)...")
+            time.sleep(5)
 
         print("Infrastructure deployed successfully.")
 
