@@ -1,3 +1,9 @@
 resources:
   - namespaces.yaml
   - ../persistent
+
+images:
+  - name: digitalengn
+    newTag: "1.0.0"
+  - name: docsengn
+    newTag: "1.0.0"
