@@ -56,7 +56,37 @@ def main():
         time.sleep(60)
 
         print("\nDeployment complete. Core infrastructure should be accessible.")
-        print("You can run 'kubectl get pods -A' to check status.")
+
+        # List available URL endpoints
+        print("\nAvailable Endpoints (via Ingress):")
+        result = subprocess.run(
+            [
+                "kubectl",
+                "get",
+                "ingress",
+                "-A",
+                "-o",
+                "jsonpath={range .items[*].spec.rules[*]}{.host}{'\\n'}{end}",
+            ],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        hosts = sorted(list(set(result.stdout.strip().split("\n"))))
+        for host in hosts:
+            if host:
+                print(f"  - http://{host}")
+
+        print(
+            "\nNote: You may need to add these hosts to your /etc/hosts mapping to the Minikube IP."
+        )
+        ip_result = subprocess.run(
+            ["minikube", "ip"], capture_output=True, text=True, env=env
+        )
+        minikube_ip = ip_result.stdout.strip()
+        print(f"Minikube IP: {minikube_ip}")
+
+        print("\nYou can run 'kubectl get pods -A' to check status.")
 
     except subprocess.CalledProcessError as e:
         print(f"Error during deployment: {e}", file=sys.stderr)
