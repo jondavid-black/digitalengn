@@ -1,0 +1,8 @@
+{
+  "name": "digitalengn-monorepo",
+  "private": true,
+  "workspaces": [
+    "digitalengn",
+    "docsengn"
+  ]
+}

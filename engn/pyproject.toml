@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "engn"
+version = "0.1.0"
+description = "Python CLI application for AI agent integration and support"
+requires-python = ">=3.9"
+dependencies = [
+    "click",
+]
+
+[project.scripts]
+engn = "engn.main:main"
