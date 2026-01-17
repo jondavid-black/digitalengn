@@ -166,13 +166,13 @@ def main():
         print("Infrastructure deployed successfully.")
 
         # Start port-forward for ingress controller
-        print("Starting port-forward on 0.0.0.0:8080...")
+        print("Starting port-forward on localhost:8080...")
         port_forward_proc = subprocess.Popen(
             [
                 "kubectl",
                 "port-forward",
                 "--address",
-                "0.0.0.0",
+                "localhost",
                 "-n",
                 "ingress-nginx",
                 "service/ingress-nginx-controller",
