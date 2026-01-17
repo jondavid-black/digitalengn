@@ -30,6 +30,10 @@ __pycache__/
 venv/
 ENV/
 env/
+.ruff_cache/
+.pytest_cache/
+.pyrightcache/
+.mypy_cache/
 build/
 develop-eggs/
 dist/
@@ -50,4 +54,14 @@ MANIFEST
 
 # SvelteKit
 .svelte-kit/
+
+# Astro
+.astro/
+
+# IDEs
 .idea/
+.vscode/
+
+# Tools
+.envrc
+.direnv/

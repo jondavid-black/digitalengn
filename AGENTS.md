@@ -5,6 +5,7 @@ This document provides comprehensive instructions for AI agents operating within
 ## Project Overview
 
 DigitalEngn is a monorepo containing:
+
 - `digitalengn/`: TypeScript web application for workspace and project management.
 - `docsengn/`: TypeScript web application for document and slide editing.
 - `engn/`: Python CLI application for AI agent integration and support.
@@ -15,6 +16,7 @@ DigitalEngn is a monorepo containing:
 This project expects the host system to provide certain tools. If these aren't present inform the user and provide instructions for them to properly install the required tools in their environment.
 
 ### Core Environment Tools
+
 | Tool | Check Command | Initialization Command | Description |
 | :--- | :--- | :--- | :--- |
 | **UV** | `uv --version` | `uv init` | Modern python package manager. |
@@ -22,6 +24,7 @@ This project expects the host system to provide certain tools. If these aren't p
 | **OpenCode** | `opencode --version` | `/init` (in OpenCode TUI) | Open source AI Agent. |
 
 ### Core Project Tools (Python)
+
 If these tools aren't present in the Python environment, add them to the project's dev dependencies.
 
 | Tool | Install Command | Description |
@@ -36,6 +39,7 @@ If these tools aren't present in the Python environment, add them to the project
 ## Build, Lint, and Test Commands
 
 ### Python Projects (`engn`)
+
 Uses **uv** for dependency management. All commands should be executed via `uv run`.
 
 | Action | Command | Description |
@@ -49,6 +53,7 @@ Uses **uv** for dependency management. All commands should be executed via `uv r
 | **BDD Feature** | `uv run behave features/<pkg>/<use_case>.feature` | Run specific feature |
 
 ### TypeScript Projects (`digitalengn`, `docsengn`)
+
 Uses **npm** workspaces and **SvelteKit**. Run from root or with `-w`.
 
 | Action | Command | Description |
@@ -63,6 +68,7 @@ Uses **npm** workspaces and **SvelteKit**. Run from root or with `-w`.
 ## Issue Tracking (beads)
 
 This project uses **bd (beads)** for issue tracking to ensure work is visible.
+
 - `bd ready` - Find unblocked work.
 - `bd create "Title" --type task --priority 2` - Create issue.
 - `bd close <id>` - Complete work.
@@ -79,6 +85,7 @@ This project uses **bd (beads)** for issue tracking to ensure work is visible.
 ## Code Style & Conventions
 
 ### Python Standards
+
 - **Style**: Adhere strictly to **PEP 8**. We use `ruff` for formatting and linting.
 - **Type Safety**: Mandatory type hints for all new code. Use modern generics (e.g., `list[str]`). Verify with `pyright`.
 - **Naming**: `snake_case` for vars/funcs, `PascalCase` for classes, `UPPER_CASE` for constants. Prefix private members with `_`.
@@ -86,6 +93,7 @@ This project uses **bd (beads)** for issue tracking to ensure work is visible.
 - **Error Handling**: Use specific, custom exception classes. Catch narrowly and provide context when re-raising. Fail fast.
 
 ### TypeScript Standards
+
 - **Strictness**: `strict: true` is enabled. Provide explicit types for exported members.
 - **Framework**: **SvelteKit** is the preferred framework for web applications.
 - **Structure**: Source in `src/`, UI in `src/components/`, hooks in `src/hooks/`.
@@ -93,6 +101,7 @@ This project uses **bd (beads)** for issue tracking to ensure work is visible.
 - **Formatting**: 2-space indentation.
 
 ### Project Structure (Python)
+
 - `docs/`: Application/library documentation.
 - `src/` or `<pkg>/`: Source code and modules.
 - `tests/`: Unit tests mirroring the source structure.
@@ -101,22 +110,26 @@ This project uses **bd (beads)** for issue tracking to ensure work is visible.
 ## Landing the Plane (Session Completion)
 
 **MANDATORY WORKFLOW** - Work is NOT complete until `git push` succeeds:
+
 1. **File follow-up issues** for remaining work in **bd**.
 2. **Run quality gates**: Tests, linters, builds.
 3. **Update issue status**: Close finished work in **bd**.
 4. **PUSH TO REMOTE**:
+
    ```bash
    git pull --rebase
    bd sync
    git push
    git status  # MUST show "up to date with origin"
    ```
+
 5. **Clean up**: Clear stashes, prune remote branches.
 6. **Hand off**: Provide context for the next session.
 
 **CRITICAL RULES**: Work is NOT complete until `git push` succeeds. NEVER stop before pushing.
 
 ## AI Agent Specifics
+
 - **Context**: Consider surrounding code and monorepo structure.
 - **Safety**: Explain impact before modifying filesystem or running shell commands.
 - **Dependencies**: Do not introduce new dependencies without explicit instruction.

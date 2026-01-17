@@ -5,5 +5,8 @@
     "digitalengn",
     "docsengn",
     "docs"
-  ]
+  ],
+  "scripts": {
+    "postinstall": "./scripts/sync-assets.sh"
+  }
 }

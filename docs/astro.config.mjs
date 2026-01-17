@@ -7,6 +7,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'DigitalEngn',
+			favicon: '/shared/favicon.svg',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/jondavid-black/digitalengn' }],
 			sidebar: [
 				{
