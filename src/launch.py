@@ -45,12 +45,35 @@ def main():
         print("Enabling ingress addon...")
         run_command(["minikube", "addons", "enable", "ingress"], env=env)
 
-        # Apply kustomization
-        print("Applying infrastructure configuration...")
-        run_command(["kubectl", "apply", "-k", "infrastructure/k8s/base"], env=env)
-
-        # Wait for ingress controller to be ready
+        # Wait for ingress controller to be ready BEFORE applying configuration
+        # This prevents the "failed calling webhook" error for Ingress resources
         print("Waiting for ingress controller to be ready...")
+
+        # First wait for the deployment to exist (minikube addon might take a second to create it)
+        max_retries = 10
+        for i in range(max_retries):
+            result = subprocess.run(
+                [
+                    "kubectl",
+                    "get",
+                    "deployment",
+                    "-n",
+                    "ingress-nginx",
+                    "ingress-nginx-controller",
+                ],
+                capture_output=True,
+                env=env,
+            )
+            if result.returncode == 0:
+                break
+            if i == max_retries - 1:
+                print(
+                    "Error: ingress-nginx-controller deployment not found after enabling addon.",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+            time.sleep(2)
+
         run_command(
             [
                 "kubectl",
@@ -60,10 +83,17 @@ def main():
                 "--for=condition=ready",
                 "pod",
                 "--selector=app.kubernetes.io/component=controller",
-                "--timeout=90s",
+                "--timeout=120s",
             ],
             env=env,
         )
+        # Extra buffer for the webhook service to start listening
+        print("Waiting an extra 10 seconds for the webhook service to stabilize...")
+        time.sleep(10)
+
+        # Apply kustomization
+        print("Applying infrastructure configuration...")
+        run_command(["kubectl", "apply", "-k", "infrastructure/k8s/base"], env=env)
 
         print("Infrastructure deployed successfully.")
 
