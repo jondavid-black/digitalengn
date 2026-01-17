@@ -3,7 +3,14 @@ kind: Ingress
 metadata:
   name: digitalengn-ingress
   namespace: digitalengn
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - localhost
+    secretName: digitalengn-tls
   rules:
   - http:
       paths:

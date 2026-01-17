@@ -31,10 +31,6 @@ spec:
         env:
         - name: OPENPROJECT_RAILS_RELATIVE_URL_ROOT
           value: "/plan"
-        - name: OPENPROJECT_HTTPS
-          value: "false"
-        - name: OPENPROJECT_HSTS
-          value: "false"
         - name: OPENPROJECT_SECRET_KEY_BASE
           value: "supersecret" # Should be a secret in production
         ports:

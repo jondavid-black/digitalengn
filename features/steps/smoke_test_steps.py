@@ -77,10 +77,12 @@ def step_access_urls(context: Any):
         [
             "kubectl",
             "port-forward",
+            "--address",
+            "localhost",
             "-n",
             "ingress-nginx",
             "service/ingress-nginx-controller",
-            "8080:80",
+            "8080:443",
         ],
         env=env,
         stdout=subprocess.DEVNULL,
@@ -92,13 +94,16 @@ def step_access_urls(context: Any):
 
     try:
         for row in context.table:
-            # Test via localhost:8080
-            url = f"http://localhost:8080{row['path']}"
+            # Test via localhost:8080 (HTTPS)
+            url = f"https://localhost:8080{row['path']}"
             # Retry a few times as apps might be starting up
             # Reduced retries since we now have an explicit 60s wait
             for _ in range(2):
                 try:
-                    response = requests.get(url, timeout=3, allow_redirects=True)
+                    # verify=False for self-signed certificates in dev
+                    response = requests.get(
+                        url, timeout=3, allow_redirects=True, verify=False
+                    )
                     context.responses[row["name"]] = response.status_code
                     if response.status_code < 500:
                         break

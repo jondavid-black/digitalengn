@@ -50,6 +50,53 @@ def main():
         else:
             print("Minikube is already running.")
 
+        # Ensure TLS secret exists
+        print("Checking for TLS secret...")
+        result = subprocess.run(
+            ["kubectl", "get", "secret", "-n", "digitalengn", "digitalengn-tls"],
+            capture_output=True,
+            env=env,
+        )
+        if result.returncode != 0:
+            print("TLS secret not found. Generating self-signed certificate...")
+            cert_dir = "/tmp/digitalengn-certs"
+            os.makedirs(cert_dir, exist_ok=True)
+            run_command(
+                [
+                    "openssl",
+                    "req",
+                    "-x509",
+                    "-nodes",
+                    "-days",
+                    "365",
+                    "-newkey",
+                    "rsa:2048",
+                    "-keyout",
+                    f"{cert_dir}/tls.key",
+                    "-out",
+                    f"{cert_dir}/tls.crt",
+                    "-subj",
+                    "/CN=localhost",
+                    "-addext",
+                    "subjectAltName = DNS:localhost",
+                ],
+                env=env,
+            )
+            run_command(
+                [
+                    "kubectl",
+                    "create",
+                    "secret",
+                    "tls",
+                    "digitalengn-tls",
+                    f"--cert={cert_dir}/tls.crt",
+                    f"--key={cert_dir}/tls.key",
+                    "-n",
+                    "digitalengn",
+                ],
+                env=env,
+            )
+
         # Build images if requested
         if args.build:
             print("\n--- Performing requested container builds ---")
@@ -166,7 +213,7 @@ def main():
         print("Infrastructure deployed successfully.")
 
         # Start port-forward for ingress controller
-        print("Starting port-forward on localhost:8080...")
+        print("Starting port-forward on localhost:8080 (HTTPS)...")
         port_forward_proc = subprocess.Popen(
             [
                 "kubectl",
@@ -176,7 +223,7 @@ def main():
                 "-n",
                 "ingress-nginx",
                 "service/ingress-nginx-controller",
-                "8080:80",
+                "8080:443",
             ],
             env=env,
             stdout=subprocess.PIPE,
@@ -195,10 +242,10 @@ def main():
             sys.exit(1)
 
         print("\nDeployment complete and port-forwarding active.")
-        print("Core infrastructure is accessible on the network at port 8080.")
+        print("Core infrastructure is accessible on the network at port 8080 (HTTPS).")
         print("Examples:")
-        print("  - http://localhost:8080/       (digitalengn)")
-        print("  - http://localhost:8080/plan   (openproject)")
+        print("  - https://localhost:8080/       (digitalengn)")
+        print("  - https://localhost:8080/plan   (openproject)")
         print("  - http://localhost:8080/git    (gitlab)")
 
         # Also show Ingress hosts if any are specifically defined
