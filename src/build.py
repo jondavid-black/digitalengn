@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 import json
+import time
 
 
 def run_command(command, env=None):
@@ -38,13 +39,27 @@ def main():
     }
 
     try:
-        # Check if minikube is running
-        result = subprocess.run(
-            ["minikube", "status"], capture_output=True, text=True, env=env
-        )
-        if "Running" not in result.stdout:
+        # Check if minikube is running with retry logic
+        minikube_ready = False
+        for attempt in range(5):
+            result = subprocess.run(
+                ["minikube", "status"], capture_output=True, text=True, env=env
+            )
+            if "Running" in result.stdout:
+                print("Minikube is running.")
+                minikube_ready = True
+                break
+
             print(
-                "Error: Minikube is not running. Please run 'uv run launch' first or start Minikube.",
+                f"Error: Minikube is not running. Please run 'uv run launch' first or start Minikube. (Attempt {attempt + 1}/5)"
+            )
+            if attempt < 4:
+                print("Retrying in 5 seconds...")
+                time.sleep(5)
+
+        if not minikube_ready:
+            print(
+                "\nFailed to connect to Minikube after 5 attempts. Terminating.",
                 file=sys.stderr,
             )
             sys.exit(1)
@@ -53,19 +68,15 @@ def main():
             version = get_version(paths["package_json"])
             print(f"\n--- Building {service} (version: {version}) ---")
 
-            image_name = service
-            version_tag = f"{image_name}:{version}"
-            latest_tag = f"{image_name}:latest"
-
-            # Build using podman
+            # Use minikube image build to build directly inside the cluster.
+            # This is more robust than podman build + load when using rootless drivers.
             run_command(
                 [
-                    "podman",
+                    "minikube",
+                    "image",
                     "build",
                     "-t",
-                    version_tag,
-                    "-t",
-                    latest_tag,
+                    f"{service}:{version}",
                     "-f",
                     paths["dockerfile"],
                     ".",
@@ -73,15 +84,26 @@ def main():
                 env=env,
             )
 
-            print(f"\n--- Loading {service} into Minikube ---")
-            # Load both tags to ensure consistency
-            run_command(["minikube", "image", "load", version_tag], env=env)
-            run_command(["minikube", "image", "load", latest_tag], env=env)
+            # Also tag as latest
+            print(f"--- Tagging {service} as latest ---")
+            run_command(
+                [
+                    "minikube",
+                    "image",
+                    "build",
+                    "-t",
+                    f"{service}:latest",
+                    "-f",
+                    paths["dockerfile"],
+                    ".",
+                ],
+                env=env,
+            )
 
-        print("\nAll images built and loaded successfully with version tracking.")
+        print("\nAll images built successfully within Minikube with version tracking.")
 
     except subprocess.CalledProcessError as e:
-        print(f"\nError during build/load: {e}", file=sys.stderr)
+        print(f"\nError during build: {e}", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
         print(f"\nAn unexpected error occurred: {e}", file=sys.stderr)

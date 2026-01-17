@@ -114,7 +114,7 @@ wheels = [
 
 [[package]]
 name = "digitalengn-monorepo"
-version = "0.1.0"
+version = "1.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "behave" },
@@ -123,6 +123,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "behave" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "ruff" },
@@ -136,6 +137,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "behave" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "ruff" },
