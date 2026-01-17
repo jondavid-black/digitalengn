@@ -91,7 +91,7 @@ def step_access_urls(context):
             # Reduced retries since we now have an explicit 60s wait
             for _ in range(2):
                 try:
-                    response = requests.get(url, timeout=20, allow_redirects=True)
+                    response = requests.get(url, timeout=3, allow_redirects=True)
                     context.responses[row["name"]] = response.status_code
                     if response.status_code < 500:
                         break

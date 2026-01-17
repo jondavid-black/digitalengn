@@ -115,7 +115,7 @@ wheels = [
 [[package]]
 name = "digitalengn-monorepo"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "behave" },
     { name = "requests" },
