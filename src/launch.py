@@ -2,6 +2,7 @@ import os
 import subprocess
 import time
 import sys
+import signal
 
 
 def run_command(command, env=None):
@@ -15,6 +16,19 @@ def main():
     home_bin = os.path.expanduser("~/bin")
     if home_bin not in env["PATH"]:
         env["PATH"] = f"{home_bin}:{env['PATH']}"
+
+    port_forward_proc = None
+
+    def signal_handler(sig, frame):
+        print("\nShutting down...")
+        if port_forward_proc:
+            print("Stopping port-forward...")
+            port_forward_proc.terminate()
+            port_forward_proc.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
 
     try:
         # Check if minikube is running
@@ -52,13 +66,39 @@ def main():
         )
 
         print("Infrastructure deployed successfully.")
-        print("Waiting 60 seconds for applications to start (as per smoke tests)...")
-        time.sleep(60)
 
-        print("\nDeployment complete. Core infrastructure should be accessible.")
+        # Start port-forward for ingress controller
+        print("Starting port-forward on localhost:8080...")
+        port_forward_proc = subprocess.Popen(
+            [
+                "kubectl",
+                "port-forward",
+                "-n",
+                "ingress-nginx",
+                "service/ingress-nginx-controller",
+                "8080:80",
+            ],
+            env=env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
-        # List available URL endpoints
-        print("\nAvailable Endpoints (via Ingress):")
+        # Wait for port-forward to be ready
+        time.sleep(5)
+        if port_forward_proc.poll() is not None:
+            print(
+                "Error: Port-forward failed to start. Port 8080 might be in use.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        print("\nDeployment complete and port-forwarding active.")
+        print("Core infrastructure is accessible at:")
+        print("  - http://localhost:8080/       (digitalengn)")
+        print("  - http://localhost:8080/plan   (openproject)")
+        print("  - http://localhost:8080/git    (gitlab)")
+
+        # Also show Ingress hosts if any are specifically defined
         result = subprocess.run(
             [
                 "kubectl",
@@ -73,27 +113,36 @@ def main():
             env=env,
         )
         hosts = sorted(list(set(result.stdout.strip().split("\n"))))
-        for host in hosts:
-            if host:
+        defined_hosts = [h for h in hosts if h]
+        if defined_hosts:
+            print("\nDefined Ingress Hosts (Internal):")
+            for host in defined_hosts:
                 print(f"  - http://{host}")
 
-        print(
-            "\nNote: You may need to add these hosts to your /etc/hosts mapping to the Minikube IP."
-        )
-        ip_result = subprocess.run(
-            ["minikube", "ip"], capture_output=True, text=True, env=env
-        )
-        minikube_ip = ip_result.stdout.strip()
-        print(f"Minikube IP: {minikube_ip}")
+            ip_result = subprocess.run(
+                ["minikube", "ip"], capture_output=True, text=True, env=env
+            )
+            minikube_ip = ip_result.stdout.strip()
+            print(
+                f"\nNote: To use defined hosts, map them to Minikube IP {minikube_ip} in /etc/hosts."
+            )
 
-        print("\nYou can run 'kubectl get pods -A' to check status.")
+        print("\nPress Ctrl+C to stop the port-forward and exit.")
+
+        # Keep the script running
+        while True:
+            time.sleep(1)
 
     except subprocess.CalledProcessError as e:
         print(f"Error during deployment: {e}", file=sys.stderr)
+        if port_forward_proc:
+            port_forward_proc.terminate()
         sys.exit(1)
-    except KeyboardInterrupt:
-        print("\nInterrupted by user.")
-        sys.exit(0)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}", file=sys.stderr)
+        if port_forward_proc:
+            port_forward_proc.terminate()
+        sys.exit(1)
 
 
 if __name__ == "__main__":
