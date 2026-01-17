@@ -1,0 +1,15 @@
+[project]
+name = "digitalengn-monorepo"
+version = "0.1.0"
+description = "DigitalEngn Monorepo top-level BDD tests"
+requires-python = ">=3.12"
+dependencies = [
+    "behave",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+    "ruff",
+    "pyright",
+]

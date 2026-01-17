@@ -8,6 +8,9 @@ A collection of tools and integrating infrastructure.
 - `docsengn/`: TypeScript web application for document and slide editing.
 - `engn/`: Python CLI application for AI agent integration and support.
 - `infrastructure/`: Kubernetes configuration and management.
+- `mbse/`:  SysML v2 systems engineering baseline for DigitalEngn.
+- `features/`:  Behavior Driven Development (BDD) for DigitalEngn automated acceptance tests using the Behave python library.
+- `docs/`:  The DigitalEngn documentation hosted on our GitHub Pages and built with the Astro Starlight library.
 
 ## Development
 
