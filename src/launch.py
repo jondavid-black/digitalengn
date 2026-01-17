@@ -179,15 +179,17 @@ def main():
                 "8080:80",
             ],
             env=env,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
         )
 
         # Wait for port-forward to be ready
         time.sleep(5)
         if port_forward_proc.poll() is not None:
+            stdout, stderr = port_forward_proc.communicate()
             print(
-                "Error: Port-forward failed to start. Port 8080 might be in use.",
+                f"Error: Port-forward failed to start.\nSTDOUT: {stdout}\nSTDERR: {stderr}",
                 file=sys.stderr,
             )
             sys.exit(1)

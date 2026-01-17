@@ -36,6 +36,15 @@ spec:
         ports:
         - containerPort: 80
           name: http
+        readinessProbe:
+          httpGet:
+            path: /plan/health_checks
+            port: 80
+          initialDelaySeconds: 120
+          periodSeconds: 20
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 20
         volumeMounts:
         - name: openproject-data
           mountPath: /var/openproject/assets
