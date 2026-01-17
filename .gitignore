@@ -48,6 +48,6 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# IDE
-.vscode/
+# SvelteKit
+.svelte-kit/
 .idea/
