@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: openproject
-        image: openproject/community:latest
+        image: openproject/openproject:14
         env:
         - name: OPENPROJECT_RAILS_RELATIVE_URL_ROOT
           value: "/plan"

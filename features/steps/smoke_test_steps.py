@@ -55,6 +55,12 @@ def step_launch_infra(context):
     time.sleep(10)
 
 
+@given("I wait {seconds:d} seconds for applications to start")
+def step_wait_for_apps(context, seconds):
+    print(f"Waiting {seconds} seconds for applications to start...")
+    time.sleep(seconds)
+
+
 @when("I access the following core URLs:")
 def step_access_urls(context):
     context.responses = {}
@@ -82,7 +88,8 @@ def step_access_urls(context):
             # Test via localhost:8080
             url = f"http://localhost:8080{row['path']}"
             # Retry a few times as apps might be starting up
-            for _ in range(3):
+            # Reduced retries since we now have an explicit 60s wait
+            for _ in range(2):
                 try:
                     response = requests.get(url, timeout=20, allow_redirects=True)
                     context.responses[row["name"]] = response.status_code
@@ -90,7 +97,7 @@ def step_access_urls(context):
                         break
                 except Exception as e:
                     context.responses[row["name"]] = str(e)
-                time.sleep(5)
+                time.sleep(2)
     finally:
         pf.terminate()
         pf.wait()

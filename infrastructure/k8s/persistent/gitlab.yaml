@@ -44,6 +44,10 @@ spec:
         - name: GITLAB_OMNIBUS_CONFIG
           value: |
             external_url 'http://localhost/git'
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2"
         ports:
         - containerPort: 80
           name: http

@@ -6,6 +6,7 @@ Feature: Smoke Test
 
   Scenario: Verify core infrastructure URLs in Minikube
     Given the infrastructure is launched in Minikube
+    And I wait 60 seconds for applications to start
     When I access the following core URLs:
       | name        | path   |
       | digitalengn | /      |
