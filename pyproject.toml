@@ -5,6 +5,7 @@ description = "DigitalEngn Monorepo top-level BDD tests"
 requires-python = ">=3.12"
 dependencies = [
     "behave",
+    "requests>=2.32.5",
 ]
 
 [tool.uv]

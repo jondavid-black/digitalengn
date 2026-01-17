@@ -27,8 +27,10 @@ spec:
     spec:
       containers:
       - name: openproject
-        image: openproject/community:14
+        image: openproject/community:latest
         env:
+        - name: OPENPROJECT_RAILS_RELATIVE_URL_ROOT
+          value: "/plan"
         - name: OPENPROJECT_SECRET_KEY_BASE
           value: "supersecret" # Should be a secret in production
         ports:

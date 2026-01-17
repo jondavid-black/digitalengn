@@ -3,7 +3,8 @@ FROM node:20-slim AS builder
 WORKDIR /app
 COPY package*.json ./
 COPY digitalengn/package*.json ./digitalengn/
-RUN npm install
+COPY scripts/ ./scripts/
+RUN chmod +x scripts/*.sh && npm install
 COPY . .
 RUN npm run build -w digitalengn
 

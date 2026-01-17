@@ -40,7 +40,6 @@ declare module '$env/static/private' {
 	export const VSCODE_IPC_HOOK_CLI: string;
 	export const npm_package_json: string;
 	export const NVM_INC: string;
-	export const DIRENV_DIFF: string;
 	export const VSCODE_GIT_ASKPASS_MAIN: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const npm_config_userconfig: string;
@@ -53,7 +52,6 @@ declare module '$env/static/private' {
 	export const NVM_DIR: string;
 	export const WAYLAND_DISPLAY: string;
 	export const LOGNAME: string;
-	export const DIRENV_FILE: string;
 	export const NAME: string;
 	export const WSL_INTEROP: string;
 	export const PULSE_SERVER: string;
@@ -65,10 +63,8 @@ declare module '$env/static/private' {
 	export const npm_config_cache: string;
 	export const npm_config_node_gyp: string;
 	export const PATH: string;
-	export const DIRENV_WATCHES: string;
 	export const NODE: string;
 	export const npm_package_name: string;
-	export const KUBECONFIG: string;
 	export const XDG_RUNTIME_DIR: string;
 	export const DISPLAY: string;
 	export const LANG: string;
@@ -80,7 +76,6 @@ declare module '$env/static/private' {
 	export const GOPATH: string;
 	export const npm_package_version: string;
 	export const npm_lifecycle_event: string;
-	export const DIRENV_DIR: string;
 	export const LESSCLOSE: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const npm_config_globalconfig: string;
@@ -140,7 +135,6 @@ declare module '$env/dynamic/private' {
 		VSCODE_IPC_HOOK_CLI: string;
 		npm_package_json: string;
 		NVM_INC: string;
-		DIRENV_DIFF: string;
 		VSCODE_GIT_ASKPASS_MAIN: string;
 		VSCODE_GIT_ASKPASS_NODE: string;
 		npm_config_userconfig: string;
@@ -153,7 +147,6 @@ declare module '$env/dynamic/private' {
 		NVM_DIR: string;
 		WAYLAND_DISPLAY: string;
 		LOGNAME: string;
-		DIRENV_FILE: string;
 		NAME: string;
 		WSL_INTEROP: string;
 		PULSE_SERVER: string;
@@ -165,10 +158,8 @@ declare module '$env/dynamic/private' {
 		npm_config_cache: string;
 		npm_config_node_gyp: string;
 		PATH: string;
-		DIRENV_WATCHES: string;
 		NODE: string;
 		npm_package_name: string;
-		KUBECONFIG: string;
 		XDG_RUNTIME_DIR: string;
 		DISPLAY: string;
 		LANG: string;
@@ -180,7 +171,6 @@ declare module '$env/dynamic/private' {
 		GOPATH: string;
 		npm_package_version: string;
 		npm_lifecycle_event: string;
-		DIRENV_DIR: string;
 		LESSCLOSE: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		npm_config_globalconfig: string;

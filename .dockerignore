@@ -1,0 +1,7 @@
+.git
+.beads
+node_modules
+.svelte-kit
+build
+dist
+.env
