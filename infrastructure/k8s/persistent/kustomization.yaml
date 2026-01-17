@@ -2,4 +2,5 @@ resources:
   - digitalengn.yaml
   - docsengn.yaml
   - openproject.yaml
+  - keycloak.yaml
   - ingress.yaml

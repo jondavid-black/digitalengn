@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm-config
+  namespace: digitalengn
+data:
+  digitalengn-realm.json: |
+    {
+      "realm": "digitalengn",
+      "enabled": true,
+      "users": [
+        {
+          "username": "user",
+          "enabled": true,
+          "email": "user@example.com",
+          "firstName": "Digital",
+          "lastName": "User",
+          "credentials": [
+            {
+              "type": "password",
+              "value": "password",
+              "temporary": false
+            }
+          ]
+        }
+      ],
+      "clients": [
+        {
+          "clientId": "digitalengn",
+          "enabled": true,
+          "protocol": "openid-connect",
+          "publicClient": true,
+          "redirectUris": [
+            "https://localhost/*",
+            "http://localhost:3000/*"
+          ],
+          "webOrigins": [
+            "https://localhost",
+            "http://localhost:3000"
+          ],
+          "directAccessGrantsEnabled": true
+        }
+      ]
+    }
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: keycloak-data-pvc
+  namespace: digitalengn
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: digitalengn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:26.0.0
+        args: ["start-dev", "--http-relative-path=/auth", "--import-realm"]
+        env:
+        - name: KC_BOOTSTRAP_ADMIN_USERNAME
+          value: "admin"
+        - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+          value: "admin"
+        - name: KC_HOSTNAME_STRICT
+          value: "false"
+        - name: KC_PROXY_HEADERS
+          value: "xforwarded"
+        ports:
+        - containerPort: 8080
+          name: http
+        volumeMounts:
+        - name: keycloak-data
+          mountPath: /opt/keycloak/data
+        - name: realm-config
+          mountPath: /opt/keycloak/data/import
+      volumes:
+      - name: keycloak-data
+        persistentVolumeClaim:
+          claimName: keycloak-data-pvc
+      - name: realm-config
+        configMap:
+          name: keycloak-realm-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  namespace: digitalengn
+spec:
+  selector:
+    app: keycloak
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  type: ClusterIP

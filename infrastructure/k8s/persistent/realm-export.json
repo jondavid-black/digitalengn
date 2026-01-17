@@ -1,0 +1,37 @@
+{
+  "realm": "digitalengn",
+  "enabled": true,
+  "users": [
+    {
+      "username": "user",
+      "enabled": true,
+      "email": "user@example.com",
+      "firstName": "Digital",
+      "lastName": "User",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "digitalengn",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "redirectUris": [
+        "https://localhost/*",
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": [
+        "https://localhost",
+        "http://localhost:3000"
+      ],
+      "directAccessGrantsEnabled": true
+    }
+  ]
+}
