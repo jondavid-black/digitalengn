@@ -54,9 +54,9 @@ declare module '$env/static/private' {
 	export const WAYLAND_DISPLAY: string;
 	export const LOGNAME: string;
 	export const NAME: string;
-	export const _: string;
 	export const WSL_INTEROP: string;
 	export const PULSE_SERVER: string;
+	export const _: string;
 	export const npm_config_prefix: string;
 	export const npm_config_npm_version: string;
 	export const CLAUDE_CODE_SSE_PORT: string;
@@ -151,9 +151,9 @@ declare module '$env/dynamic/private' {
 		WAYLAND_DISPLAY: string;
 		LOGNAME: string;
 		NAME: string;
-		_: string;
 		WSL_INTEROP: string;
 		PULSE_SERVER: string;
+		_: string;
 		npm_config_prefix: string;
 		npm_config_npm_version: string;
 		CLAUDE_CODE_SSE_PORT: string;
