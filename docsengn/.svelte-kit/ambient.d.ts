@@ -29,18 +29,18 @@ declare module '$env/static/private' {
 	export const LESSOPEN: string;
 	export const USER: string;
 	export const npm_config_user_agent: string;
-	export const AGENT: string;
 	export const GIT_ASKPASS: string;
-	export const OPENCODE_CALLER: string;
 	export const npm_node_execpath: string;
 	export const SHLVL: string;
 	export const npm_config_noproxy: string;
 	export const HOME: string;
+	export const OLDPWD: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const NVM_BIN: string;
 	export const VSCODE_IPC_HOOK_CLI: string;
 	export const npm_package_json: string;
 	export const NVM_INC: string;
+	export const DIRENV_DIFF: string;
 	export const VSCODE_GIT_ASKPASS_MAIN: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const npm_config_userconfig: string;
@@ -53,6 +53,7 @@ declare module '$env/static/private' {
 	export const NVM_DIR: string;
 	export const WAYLAND_DISPLAY: string;
 	export const LOGNAME: string;
+	export const DIRENV_FILE: string;
 	export const NAME: string;
 	export const WSL_INTEROP: string;
 	export const PULSE_SERVER: string;
@@ -62,11 +63,12 @@ declare module '$env/static/private' {
 	export const CLAUDE_CODE_SSE_PORT: string;
 	export const TERM: string;
 	export const npm_config_cache: string;
-	export const OPENCODE: string;
 	export const npm_config_node_gyp: string;
 	export const PATH: string;
+	export const DIRENV_WATCHES: string;
 	export const NODE: string;
 	export const npm_package_name: string;
+	export const KUBECONFIG: string;
 	export const XDG_RUNTIME_DIR: string;
 	export const DISPLAY: string;
 	export const LANG: string;
@@ -75,10 +77,10 @@ declare module '$env/static/private' {
 	export const TERM_PROGRAM: string;
 	export const npm_lifecycle_script: string;
 	export const SHELL: string;
-	export const _EXTENSION_OPENCODE_PORT: string;
 	export const GOPATH: string;
 	export const npm_package_version: string;
 	export const npm_lifecycle_event: string;
+	export const DIRENV_DIR: string;
 	export const LESSCLOSE: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const npm_config_globalconfig: string;
@@ -94,6 +96,7 @@ declare module '$env/static/private' {
 	export const WSLENV: string;
 	export const INIT_CWD: string;
 	export const EDITOR: string;
+	export const NODE_ENV: string;
 }
 
 /**
@@ -126,18 +129,18 @@ declare module '$env/dynamic/private' {
 		LESSOPEN: string;
 		USER: string;
 		npm_config_user_agent: string;
-		AGENT: string;
 		GIT_ASKPASS: string;
-		OPENCODE_CALLER: string;
 		npm_node_execpath: string;
 		SHLVL: string;
 		npm_config_noproxy: string;
 		HOME: string;
+		OLDPWD: string;
 		TERM_PROGRAM_VERSION: string;
 		NVM_BIN: string;
 		VSCODE_IPC_HOOK_CLI: string;
 		npm_package_json: string;
 		NVM_INC: string;
+		DIRENV_DIFF: string;
 		VSCODE_GIT_ASKPASS_MAIN: string;
 		VSCODE_GIT_ASKPASS_NODE: string;
 		npm_config_userconfig: string;
@@ -150,6 +153,7 @@ declare module '$env/dynamic/private' {
 		NVM_DIR: string;
 		WAYLAND_DISPLAY: string;
 		LOGNAME: string;
+		DIRENV_FILE: string;
 		NAME: string;
 		WSL_INTEROP: string;
 		PULSE_SERVER: string;
@@ -159,11 +163,12 @@ declare module '$env/dynamic/private' {
 		CLAUDE_CODE_SSE_PORT: string;
 		TERM: string;
 		npm_config_cache: string;
-		OPENCODE: string;
 		npm_config_node_gyp: string;
 		PATH: string;
+		DIRENV_WATCHES: string;
 		NODE: string;
 		npm_package_name: string;
+		KUBECONFIG: string;
 		XDG_RUNTIME_DIR: string;
 		DISPLAY: string;
 		LANG: string;
@@ -172,10 +177,10 @@ declare module '$env/dynamic/private' {
 		TERM_PROGRAM: string;
 		npm_lifecycle_script: string;
 		SHELL: string;
-		_EXTENSION_OPENCODE_PORT: string;
 		GOPATH: string;
 		npm_package_version: string;
 		npm_lifecycle_event: string;
+		DIRENV_DIR: string;
 		LESSCLOSE: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		npm_config_globalconfig: string;
@@ -191,6 +196,7 @@ declare module '$env/dynamic/private' {
 		WSLENV: string;
 		INIT_CWD: string;
 		EDITOR: string;
+		NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}

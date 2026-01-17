@@ -11,3 +11,10 @@ metadata:
   name: engn-dynamic
   labels:
     name: engn-dynamic
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: docsengn
+  labels:
+    name: docsengn

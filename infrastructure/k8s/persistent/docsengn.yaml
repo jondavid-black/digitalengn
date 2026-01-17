@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digitalengn
-  namespace: digitalengn
+  name: docsengn
+  namespace: docsengn
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: digitalengn
+      app: docsengn
   template:
     metadata:
       labels:
-        app: digitalengn
+        app: docsengn
     spec:
       containers:
-      - name: digitalengn
-        image: digitalengn:latest
+      - name: docsengn
+        image: docsengn:latest
         ports:
         - containerPort: 3000
           name: http
@@ -23,11 +23,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: digitalengn
-  namespace: digitalengn
+  name: docsengn
+  namespace: docsengn
 spec:
   selector:
-    app: digitalengn
+    app: docsengn
   ports:
   - name: http
     port: 80
