@@ -1,7 +1,5 @@
 resources:
   - digitalengn.yaml
   - docsengn.yaml
-  - gitlab.yaml
-  - gitlab-runner.yaml
   - openproject.yaml
   - ingress.yaml
