@@ -68,11 +68,13 @@ def main():
         print("Infrastructure deployed successfully.")
 
         # Start port-forward for ingress controller
-        print("Starting port-forward on localhost:8080...")
+        print("Starting port-forward on 0.0.0.0:8080...")
         port_forward_proc = subprocess.Popen(
             [
                 "kubectl",
                 "port-forward",
+                "--address",
+                "0.0.0.0",
                 "-n",
                 "ingress-nginx",
                 "service/ingress-nginx-controller",
@@ -93,7 +95,8 @@ def main():
             sys.exit(1)
 
         print("\nDeployment complete and port-forwarding active.")
-        print("Core infrastructure is accessible at:")
+        print("Core infrastructure is accessible on the network at port 8080.")
+        print("Examples:")
         print("  - http://localhost:8080/       (digitalengn)")
         print("  - http://localhost:8080/plan   (openproject)")
         print("  - http://localhost:8080/git    (gitlab)")
