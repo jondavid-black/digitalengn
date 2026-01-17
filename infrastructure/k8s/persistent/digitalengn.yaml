@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digitalengn
+  namespace: digitalengn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digitalengn
+  template:
+    metadata:
+      labels:
+        app: digitalengn
+    spec:
+      containers:
+      - name: digitalengn
+        image: digitalengn/landing:latest
+        ports:
+        - containerPort: 5173 # SvelteKit default dev port, but likely 80/443 in prod
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: digitalengn
+  namespace: digitalengn
+spec:
+  selector:
+    app: digitalengn
+  ports:
+  - name: http
+    port: 80
+    targetPort: 5173
+  type: LoadBalancer

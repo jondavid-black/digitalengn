@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: openproject-data-pvc
+  namespace: digitalengn
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openproject
+  namespace: digitalengn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openproject
+  template:
+    metadata:
+      labels:
+        app: openproject
+    spec:
+      containers:
+      - name: openproject
+        image: openproject/community:14
+        env:
+        - name: OPENPROJECT_SECRET_KEY_BASE
+          value: "supersecret" # Should be a secret in production
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: openproject-data
+          mountPath: /var/openproject/assets
+      volumes:
+      - name: openproject-data
+        persistentVolumeClaim:
+          claimName: openproject-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openproject
+  namespace: digitalengn
+spec:
+  selector:
+    app: openproject
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  type: ClusterIP

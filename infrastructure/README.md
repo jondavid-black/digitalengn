@@ -3,6 +3,27 @@
 This directory manages the Kubernetes configuration for the DigitalEngn monorepo.
 Local testing is performed using **Minikube** with **Podman** as the container runtime.
 
+## Design Goals
+
+The infrastructure is designed to support both persistent team services and dynamic, on-demand developer environments.
+
+### Persistent Applications
+These applications are maintained as core services within the cluster:
+- **DigitalEngn**: The top-level landing page, dashboard, and navigation assistant.
+- **OpenProject**: Project management and collaboration.
+- **GitLab**: Source code management and CI/CD registry. Includes configured GitLab Runners for pipeline support.
+
+### Dynamic Applications
+These are user and project-specific applications that launch on-demand and scale to zero when not in use:
+- **VS Code**: Web-based IDE.
+- **PenPot**: Design and prototyping.
+- **DocsEngn**: Document and slide editing.
+
+**Architecture for Dynamic Apps:**
+- **Encapsulation**: Each user/project environment is contained within a single Pod.
+- **Shared Storage**: Applications within the same Pod share an underlying file system (EmptyDir or PV) containing a local clone of the project's repository from GitLab.
+- **Scaling**: Managed via Kubernetes-native scaling (e.g., KEDA or custom controller) to optimize resource usage by scaling to zero.
+
 ## Prerequisites
 
 - **Podman**: Used for building and managing containers.

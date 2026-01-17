@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dynamic-env-sample
+  namespace: engn-dynamic
+spec:
+  replicas: 0 # Scaled by KEDA
+  selector:
+    matchLabels:
+      app: dynamic-env-sample
+  template:
+    metadata:
+      labels:
+        app: dynamic-env-sample
+    spec:
+      initContainers:
+      - name: git-clone
+        image: alpine/git
+        command: ["git", "clone", "http://gitlab.digitalengn/project.git", "/workspace"]
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+      containers:
+      - name: vscode
+        image: codercom/code-server:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: workspace
+          mountPath: /home/coder/project
+      - name: penpot
+        image: penpotapp/frontend:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+      - name: docsengn
+        image: digitalengn/docsengn:latest
+        ports:
+        - containerPort: 5174
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+      volumes:
+      - name: workspace
+        emptyDir: {}

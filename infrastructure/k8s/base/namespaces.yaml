@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: digitalengn
+  labels:
+    name: digitalengn
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: engn-dynamic
+  labels:
+    name: engn-dynamic
