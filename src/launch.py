@@ -50,6 +50,13 @@ def main():
         else:
             print("Minikube is already running.")
 
+        # Ensure namespaces exist before creating secrets
+        print("Ensuring namespaces exist...")
+        run_command(
+            ["kubectl", "apply", "-f", "infrastructure/k8s/base/namespaces.yaml"],
+            env=env,
+        )
+
         # Ensure TLS secret exists
         print("Checking for TLS secret...")
         result = subprocess.run(
