@@ -12,7 +12,7 @@
   import ComponentPanel from "$lib/components/ComponentPanel.svelte";
   import StylePanel from "$lib/components/StylePanel.svelte";
   import TabManager from "$lib/components/TabManager.svelte";
-  import { tabs, activeTabId } from "$lib/stores";
+  import { tabs, activeTabId, activeTab } from "$lib/stores";
 
   const activeRailItem = writable(null);
   const drawerOpen = writable(false);
@@ -75,7 +75,23 @@
         {#if currentRailItem?.component}
           <svelte:component this={currentRailItem.component} />
         {:else if $activeRailItem === 'preview'}
-          <div class="text-sm text-zinc-400 italic">Preview mode active. External window will open...</div>
+          <div class="flex flex-col gap-4">
+            <p class="text-sm text-zinc-400">
+              Preview the current document in a new window.
+            </p>
+            {#if $activeTab}
+              <a 
+                href="/preview?filename={encodeURIComponent($activeTab.title)}" 
+                target="_blank"
+                class="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors font-medium text-sm"
+              >
+                <Play size={16} />
+                Open Preview
+              </a>
+            {:else}
+              <p class="text-sm text-zinc-500 italic">No document open.</p>
+            {/if}
+          </div>
         {/if}
       </div>
     </aside>

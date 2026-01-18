@@ -7,10 +7,15 @@
     Italic, 
     Underline
   } from 'lucide-svelte';
+  import { editorAction } from '$lib/stores';
 
   let fontSize = 16;
   let color = '#ffffff';
   let strokeWidth = 1;
+
+  function dispatch(type, payload) {
+    editorAction.set({ type, payload });
+  }
 </script>
 
 <div class="space-y-6">
@@ -28,29 +33,48 @@
           max="72" 
           bind:value={fontSize}
           class="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+          on:change={() => dispatch('setFontSize', fontSize)}
         />
       </div>
 
       <div class="flex items-center gap-1">
-        <button class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors">
+        <button 
+          on:click={() => dispatch('toggleBold')}
+          class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
+        >
           <Bold size={16} class="mx-auto" />
         </button>
-        <button class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors">
+        <button 
+          on:click={() => dispatch('toggleItalic')}
+          class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
+        >
           <Italic size={16} class="mx-auto" />
         </button>
-        <button class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors">
+        <button 
+          on:click={() => dispatch('toggleUnderline')}
+          class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
+        >
           <Underline size={16} class="mx-auto" />
         </button>
       </div>
 
       <div class="flex items-center gap-1">
-        <button class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors">
+        <button 
+          on:click={() => dispatch('setTextAlign', 'left')}
+          class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
+        >
           <AlignLeft size={16} class="mx-auto" />
         </button>
-        <button class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors">
+        <button 
+          on:click={() => dispatch('setTextAlign', 'center')}
+          class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
+        >
           <AlignCenter size={16} class="mx-auto" />
         </button>
-        <button class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors">
+        <button 
+          on:click={() => dispatch('setTextAlign', 'right')}
+          class="flex-1 p-2 bg-zinc-800 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
+        >
           <AlignRight size={16} class="mx-auto" />
         </button>
       </div>

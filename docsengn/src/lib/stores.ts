@@ -21,3 +21,5 @@ export const activeTab = derived(
 export function updateTabContent(id: string, content: string) {
   tabs.update(t => t.map(tab => tab.id === id ? { ...tab, content } : tab));
 }
+
+export const editorAction = writable<{ type: string; payload?: any } | null>(null);
