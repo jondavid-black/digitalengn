@@ -3,7 +3,7 @@
   import EmbeddedPage from "$lib/components/EmbeddedPage.svelte";
 
   type NodeType = 'Portfolio' | 'Program' | 'Project';
-  type DataSet = 'Hierarchy' | 'BizMgnt' | 'Organization' | 'Scope' | 'Risk' | 'Schedule' | 'Material' | 'Travel' | 'General' | 'SE' | 'HW' | 'SW';
+  type DataSet = 'Struct' | 'BM' | 'Org' | 'WBS' | 'R&O' | 'IMS' | 'Material' | 'Travel' | 'General' | 'SE' | 'HW' | 'SW';
 
   interface Repository {
     url: string;
@@ -31,7 +31,7 @@
   let showUserDropdown = false;
   let theme = 'dark';
 
-  const ALL_DATA_SETS: DataSet[] = ['Hierarchy', 'BizMgnt', 'Organization', 'Scope', 'Risk', 'Schedule', 'Material', 'Travel', 'General', 'SE', 'HW', 'SW'];
+  const ALL_DATA_SETS: DataSet[] = ['Struct', 'BM', 'Org', 'WBS', 'R&O', 'IMS', 'Material', 'Travel', 'General', 'SE', 'HW', 'SW'];
 
   // State for Hierarchy
   let nodes: Node[] = [
@@ -62,11 +62,11 @@
   
   const pmTabs = [
     { id: 'Dashboard', icon: '📊' },
-    { id: 'Scope', icon: '🎯' },
-    { id: 'Organization', icon: '👥' },
-    { id: 'BizMgnt', icon: '💼' },
-    { id: 'Risk & Opportunity', icon: '⚠️' },
-    { id: 'Schedule', icon: '📅' },
+    { id: 'WBS', icon: '🎯' },
+    { id: 'Org', icon: '👥' },
+    { id: 'BM', icon: '💼' },
+    { id: 'R&O', icon: '⚠️' },
+    { id: 'IMS', icon: '📅' },
     { id: 'Material', icon: '📦' },
     { id: 'Travel', icon: '✈️' }
   ];
