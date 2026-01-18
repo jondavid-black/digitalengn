@@ -6,7 +6,7 @@
   let password = '';
   let isLoggedIn = false;
   let activeTab = 'Home';
-  let isPinned = false;
+  let isPinned = true;
   let forceShowToolbar = false;
   let showUserDropdown = false;
   let theme = 'dark';
