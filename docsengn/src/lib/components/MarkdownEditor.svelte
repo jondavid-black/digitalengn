@@ -36,7 +36,8 @@
           editor.chain().focus().insertContent('New Text Block').run();
           break;
         case 'toggleHeading':
-          editor.chain().focus().toggleHeading({ level: 2 }).run();
+          const level = action.payload || 2;
+          editor.chain().focus().toggleHeading({ level }).run();
           break;
         case 'toggleBlockquote':
           editor.chain().focus().toggleBlockquote().run();
@@ -69,7 +70,6 @@
       // Reset action to null
       editorAction.set(null);
     });
-
   });
 
   onDestroy(() => {

@@ -38,6 +38,8 @@
   function toggleDrawer() {
     drawerOpen.update(v => !v);
   }
+
+  let showHeadings = false;
 </script>
 
 <div class="h-14 bg-zinc-900 border-b border-zinc-800 flex items-center px-4 gap-4 shrink-0 z-50">
@@ -90,10 +92,39 @@
           <Type size={18} />
           <span class="hidden xl:inline">Text</span>
         </button>
-        <button on:click={() => dispatch('toggleHeading')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Heading">
-          <Type size={18} class="font-bold" />
-          <span class="hidden xl:inline">Heading</span>
-        </button>
+        <div class="relative">
+          <button 
+            on:click={() => showHeadings = !showHeadings} 
+            class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm {showHeadings ? 'bg-zinc-800 text-zinc-100' : ''}" 
+            title="Heading"
+          >
+            <Type size={18} class="font-bold" />
+            <span class="hidden xl:inline">Heading</span>
+            <ChevronDown size={14} />
+          </button>
+
+          {#if showHeadings}
+            <div class="fixed inset-0 z-40" on:click={() => showHeadings = false} role="presentation"></div>
+            <div class="absolute top-full left-0 mt-1 w-48 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl z-50 flex flex-col p-1">
+              {#each [1, 2, 3, 4, 5, 6] as level}
+                <button 
+                  on:click={() => { dispatch('toggleHeading', level); showHeadings = false; }}
+                  class="flex items-center gap-2 px-3 py-2 text-left hover:bg-zinc-800 rounded text-zinc-300 hover:text-zinc-100"
+                >
+                  <span class={
+                    level === 1 ? "text-2xl font-bold" :
+                    level === 2 ? "text-xl font-bold" :
+                    level === 3 ? "text-lg font-bold" :
+                    level === 4 ? "text-base font-bold" :
+                    level === 5 ? "text-sm font-bold" :
+                    "text-xs font-bold"
+                  }>H{level}</span>
+                  <span class="text-sm">Heading {level}</span>
+                </button>
+              {/each}
+            </div>
+          {/if}
+        </div>
         <button on:click={() => dispatch('addImage')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Image">
           <ImageIcon size={18} />
           <span class="hidden xl:inline">Image</span>

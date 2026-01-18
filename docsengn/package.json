@@ -14,6 +14,9 @@
     "test:unit": "vitest"
   },
   "devDependencies": {
+    "@csstools/css-parser-algorithms": "^4.0.0",
+    "@csstools/css-tokenizer": "^4.0.0",
+    "@csstools/media-query-list-parser": "^5.0.0",
     "@eslint/js": "^9.39.2",
     "@slidev/cli": "^52.11.3",
     "@slidev/theme-default": "^0.25.0",
@@ -21,11 +24,13 @@
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@tailwindcss/postcss": "^4.1.18",
+    "@testing-library/svelte": "^5.3.1",
     "@types/node": "^25.0.9",
     "autoprefixer": "^10.4.23",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-svelte": "^2.35.0",
+    "jsdom": "^27.4.0",
     "lucide-svelte": "^0.562.0",
     "postcss": "^8.5.6",
     "prettier": "^3.1.1",
