@@ -14,10 +14,10 @@
   const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc", "AI"];
   
   const tabUrls: Record<string, string> = {
-    'Plan': 'https://www.openproject.org/',
-    'SE': 'https://www.sysgit.io/',
+    'Plan': 'https://svelte.dev',
+    'SE': 'https://svelte.dev',
     'UX': 'https://penpot.app/',
-    'Dev': 'https://code.visualstudio.com/'
+    'Dev': 'https://svelte.dev'
   };
 
   function handleLogin() {
