@@ -18,6 +18,7 @@
   let password = '';
   let isLoggedIn = false;
   let activeTab = 'Home';
+  let activeSidebarTab = 'Dashboard';
   let isPinned = true;
   let forceShowToolbar = false;
   let showUserDropdown = false;
@@ -432,12 +433,56 @@
     transition: margin-top 0.3s ease-in-out;
     height: calc(100vh - 20px);
     display: flex;
-    flex-direction: column;
   }
 
   .content.shifted {
     margin-top: 60px;
     height: calc(100vh - 60px);
+  }
+
+  .sidebar {
+    width: 60px;
+    background: var(--toolbar-bg);
+    border-right: 1px solid var(--toolbar-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1rem;
+    gap: 1rem;
+    z-index: 10;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+  }
+
+  .sidebar-item {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--item-text);
+    transition: all 0.2s;
+    background: none;
+    border: none;
+  }
+
+  .sidebar-item:hover {
+    background: var(--item-hover);
+    color: var(--text-color);
+  }
+
+  .sidebar-item.active {
+    background: #007bff;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+  }
+
+  .main-view {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
 
   .content-padded {
@@ -447,6 +492,46 @@
     margin-right: auto;
     width: 100%;
     box-sizing: border-box;
+  }
+
+  /* ShadCN/Material Mimicry */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--toolbar-border);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    transition: box-shadow 0.2s;
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--item-text);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
   }
 
   /* Hierarchy UI Styles */
@@ -654,62 +739,113 @@
 
   <main class="content" class:shifted={isPinned}>
     {#if activeTab === 'Home'}
-      <div class="content-padded">
-        <h1>Hierarchy Management</h1>
-        
-        <div class="hierarchy-nav">
-          <button class="nav-crumb" on:click={() => navigationStack = ['root']}>Global</button>
-          {#each navigationStack.slice(1) as nodeId, i}
-            <span>/</span>
-            <button class="nav-crumb" on:click={() => navigationStack = navigationStack.slice(0, i + 2)}>
-              {nodes.find(n => n.id === nodeId)?.name}
-            </button>
-          {/each}
-        </div>
+      <aside class="sidebar">
+        <button 
+          class="sidebar-item" 
+          class:active={activeSidebarTab === 'Dashboard'} 
+          on:click={() => activeSidebarTab = 'Dashboard'}
+          title="Dashboard"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+        </button>
+        <button 
+          class="sidebar-item" 
+          class:active={activeSidebarTab === 'Workspaces'} 
+          on:click={() => activeSidebarTab = 'Workspaces'}
+          title="Workspaces"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </button>
+      </aside>
 
-        <div class="add-node-bar">
-          {#if currentNavNode?.type === 'Portfolio'}
-            <button class="btn-small" on:click={() => createNode('Portfolio')}>+ Portfolio</button>
-            <button class="btn-small" on:click={() => createNode('Program')}>+ Program</button>
-            <button class="btn-small" on:click={() => createNode('Project')}>+ Project</button>
-          {:else if currentNavNode?.type === 'Program'}
-            <button class="btn-small" on:click={() => createNode('Program')}>+ Program</button>
-            <button class="btn-small" on:click={() => createNode('Project')}>+ Project</button>
-          {:else if currentNavNode?.type === 'Project'}
-            <button class="btn-small" on:click={() => createNode('Project')}>+ Project</button>
-          {/if}
-        </div>
-
-        <div class="node-list">
-          {#each childNodes as node}
-            <div class="node-card" class:active={node.id === activeNodeId}>
-              <div class="node-header">
-                <h3>{node.name}</h3>
-                <span class="node-type-badge">{node.type}</span>
+      <div class="main-view">
+        {#if activeSidebarTab === 'Dashboard'}
+          <div class="content-padded">
+            <h1>Dashboard: {activeNode?.name || 'Selection'}</h1>
+            <div class="dashboard-grid">
+              <div class="card stat-card">
+                <span class="stat-label">Type</span>
+                <span class="stat-value">{activeNode?.type || 'N/A'}</span>
               </div>
-              <p>{node.description || 'No description provided.'}</p>
-              
-              <div class="feature-toggles">
-                {#each allTabs.slice(1) as feature}
-                  <label class="feature-toggle">
-                    <input 
-                      type="checkbox" 
-                      checked={node.enabledFeatures.includes(feature)} 
-                      on:change={() => toggleFeature(node.id, feature)}
-                    />
-                    {feature}
-                  </label>
-                {/each}
+              <div class="card stat-card">
+                <span class="stat-label">Children</span>
+                <span class="stat-value">{nodes.filter(n => n.parentId === activeNode?.id).length}</span>
               </div>
-
-              <div class="node-actions">
-                <button class="btn-small" on:click={() => navigateTo(node.id)}>Open</button>
-                <button class="btn-small btn-activate" on:click={() => activateNode(node.id)}>Activate</button>
-                <button class="btn-small btn-delete" on:click={() => deleteNode(node.id)}>Delete</button>
+              <div class="card stat-card">
+                <span class="stat-label">Enabled Features</span>
+                <span class="stat-value">{activeNode?.enabledFeatures.length || 0}</span>
               </div>
             </div>
-          {/each}
-        </div>
+            
+            <div class="card" style="margin-top: 2rem;">
+              <h3>Description</h3>
+              <p>{activeNode?.description || 'No description provided.'}</p>
+            </div>
+
+            <div class="card" style="margin-top: 1.5rem;">
+              <h3>Git Repository</h3>
+              <p>{activeNode?.gitRepoUrl || 'No repository linked.'}</p>
+            </div>
+          </div>
+        {:else if activeSidebarTab === 'Workspaces'}
+          <div class="content-padded">
+            <h1>Workspaces</h1>
+            
+            <div class="hierarchy-nav">
+              <button class="nav-crumb" on:click={() => navigationStack = ['root']}>Global</button>
+              {#each navigationStack.slice(1) as nodeId, i}
+                <span>/</span>
+                <button class="nav-crumb" on:click={() => navigationStack = navigationStack.slice(0, i + 2)}>
+                  {nodes.find(n => n.id === nodeId)?.name}
+                </button>
+              {/each}
+            </div>
+
+            <div class="add-node-bar">
+              {#if currentNavNode?.type === 'Portfolio'}
+                <button class="btn-small" on:click={() => createNode('Portfolio')}>+ Portfolio</button>
+                <button class="btn-small" on:click={() => createNode('Program')}>+ Program</button>
+                <button class="btn-small" on:click={() => createNode('Project')}>+ Project</button>
+              {:else if currentNavNode?.type === 'Program'}
+                <button class="btn-small" on:click={() => createNode('Program')}>+ Program</button>
+                <button class="btn-small" on:click={() => createNode('Project')}>+ Project</button>
+              {:else if currentNavNode?.type === 'Project'}
+                <button class="btn-small" on:click={() => createNode('Project')}>+ Project</button>
+              {/if}
+            </div>
+
+            <div class="node-list">
+              {#each childNodes as node}
+                <div class="node-card card" class:active={node.id === activeNodeId}>
+                  <div class="node-header">
+                    <h3>{node.name}</h3>
+                    <span class="node-type-badge">{node.type}</span>
+                  </div>
+                  <p>{node.description || 'No description provided.'}</p>
+                  
+                  <div class="feature-toggles">
+                    {#each allTabs.slice(1) as feature}
+                      <label class="feature-toggle">
+                        <input 
+                          type="checkbox" 
+                          checked={node.enabledFeatures.includes(feature)} 
+                          on:change={() => toggleFeature(node.id, feature)}
+                        />
+                        {feature}
+                      </label>
+                    {/each}
+                  </div>
+
+                  <div class="node-actions">
+                    <button class="btn-small" on:click={() => navigateTo(node.id)}>Open</button>
+                    <button class="btn-small btn-activate" on:click={() => activateNode(node.id)}>Activate</button>
+                    <button class="btn-small btn-delete" on:click={() => deleteNode(node.id)}>Delete</button>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          </div>
+        {/if}
       </div>
     {:else if activeTab === 'PM'}
       <div class="content-padded">
