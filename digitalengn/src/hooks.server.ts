@@ -7,7 +7,7 @@ import {
   AUTH_KEYCLOAK_ISSUER,
 } from "$env/static/private";
 
-export const handle = SvelteKitAuth({
+export const { handle } = SvelteKitAuth({
   providers: [
     Keycloak({
       clientId: AUTH_KEYCLOAK_ID,

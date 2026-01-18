@@ -32,10 +32,12 @@ data:
           "publicClient": true,
           "redirectUris": [
             "https://localhost/*",
+            "https://localhost:8080/*",
             "http://localhost:3000/*"
           ],
           "webOrigins": [
             "https://localhost",
+            "https://localhost:8080",
             "http://localhost:3000"
           ],
           "directAccessGrantsEnabled": true

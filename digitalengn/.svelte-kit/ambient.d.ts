@@ -26,15 +26,20 @@
  * ```
  */
 declare module '$env/static/private' {
+	export const AUTH_SECRET: string;
+	export const AUTH_KEYCLOAK_ID: string;
+	export const AUTH_KEYCLOAK_SECRET: string;
+	export const AUTH_KEYCLOAK_ISSUER: string;
 	export const LESSOPEN: string;
 	export const USER: string;
 	export const npm_config_user_agent: string;
+	export const AGENT: string;
 	export const GIT_ASKPASS: string;
+	export const OPENCODE_CALLER: string;
 	export const npm_node_execpath: string;
 	export const SHLVL: string;
 	export const npm_config_noproxy: string;
 	export const HOME: string;
-	export const OLDPWD: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const NVM_BIN: string;
 	export const VSCODE_IPC_HOOK_CLI: string;
@@ -52,15 +57,17 @@ declare module '$env/static/private' {
 	export const NVM_DIR: string;
 	export const WAYLAND_DISPLAY: string;
 	export const LOGNAME: string;
+	export const npm_config_run: string;
 	export const NAME: string;
+	export const _: string;
 	export const WSL_INTEROP: string;
 	export const PULSE_SERVER: string;
-	export const _: string;
 	export const npm_config_prefix: string;
 	export const npm_config_npm_version: string;
 	export const CLAUDE_CODE_SSE_PORT: string;
 	export const TERM: string;
 	export const npm_config_cache: string;
+	export const OPENCODE: string;
 	export const npm_config_node_gyp: string;
 	export const PATH: string;
 	export const NODE: string;
@@ -73,6 +80,7 @@ declare module '$env/static/private' {
 	export const TERM_PROGRAM: string;
 	export const npm_lifecycle_script: string;
 	export const SHELL: string;
+	export const _EXTENSION_OPENCODE_PORT: string;
 	export const GOPATH: string;
 	export const npm_package_version: string;
 	export const npm_lifecycle_event: string;
@@ -91,7 +99,13 @@ declare module '$env/static/private' {
 	export const WSLENV: string;
 	export const INIT_CWD: string;
 	export const EDITOR: string;
+	export const TEST: string;
+	export const VITEST: string;
 	export const NODE_ENV: string;
+	export const PROD: string;
+	export const DEV: string;
+	export const BASE_URL: string;
+	export const MODE: string;
 }
 
 /**
@@ -121,15 +135,20 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
+		AUTH_SECRET: string;
+		AUTH_KEYCLOAK_ID: string;
+		AUTH_KEYCLOAK_SECRET: string;
+		AUTH_KEYCLOAK_ISSUER: string;
 		LESSOPEN: string;
 		USER: string;
 		npm_config_user_agent: string;
+		AGENT: string;
 		GIT_ASKPASS: string;
+		OPENCODE_CALLER: string;
 		npm_node_execpath: string;
 		SHLVL: string;
 		npm_config_noproxy: string;
 		HOME: string;
-		OLDPWD: string;
 		TERM_PROGRAM_VERSION: string;
 		NVM_BIN: string;
 		VSCODE_IPC_HOOK_CLI: string;
@@ -147,15 +166,17 @@ declare module '$env/dynamic/private' {
 		NVM_DIR: string;
 		WAYLAND_DISPLAY: string;
 		LOGNAME: string;
+		npm_config_run: string;
 		NAME: string;
+		_: string;
 		WSL_INTEROP: string;
 		PULSE_SERVER: string;
-		_: string;
 		npm_config_prefix: string;
 		npm_config_npm_version: string;
 		CLAUDE_CODE_SSE_PORT: string;
 		TERM: string;
 		npm_config_cache: string;
+		OPENCODE: string;
 		npm_config_node_gyp: string;
 		PATH: string;
 		NODE: string;
@@ -168,6 +189,7 @@ declare module '$env/dynamic/private' {
 		TERM_PROGRAM: string;
 		npm_lifecycle_script: string;
 		SHELL: string;
+		_EXTENSION_OPENCODE_PORT: string;
 		GOPATH: string;
 		npm_package_version: string;
 		npm_lifecycle_event: string;
@@ -186,7 +208,13 @@ declare module '$env/dynamic/private' {
 		WSLENV: string;
 		INIT_CWD: string;
 		EDITOR: string;
+		TEST: string;
+		VITEST: string;
 		NODE_ENV: string;
+		PROD: string;
+		DEV: string;
+		BASE_URL: string;
+		MODE: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}
