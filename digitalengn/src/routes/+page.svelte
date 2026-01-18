@@ -283,15 +283,30 @@
 
   .content {
     margin-top: 20px;
-    padding: 2rem;
+    padding: 0;
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
     transition: margin-top 0.3s ease-in-out;
+    height: calc(100vh - 20px);
+    display: flex;
+    flex-direction: column;
   }
 
   .content.shifted {
     margin-top: 60px;
+    height: calc(100vh - 60px);
+  }
+
+  .content-padded {
+    padding: 2rem;
+  }
+
+  .embedded-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: white;
   }
 </style>
 
@@ -358,32 +373,47 @@
 
   <main class="content" class:shifted={isPinned}>
     {#if activeTab === 'Home'}
-      <h1>Home Screen</h1>
-      <p>Welcome to Digital Engine. This is the main dashboard.</p>
+      <div class="content-padded">
+        <h1>Home Screen</h1>
+        <p>Welcome to Digital Engine. This is the main dashboard.</p>
+      </div>
     {:else if activeTab === 'PM'}
-      <h1>Project Management</h1>
-      <p>Placeholder for PM capabilities.</p>
+      <div class="content-padded">
+        <h1>Project Management</h1>
+        <p>Placeholder for PM capabilities.</p>
+      </div>
     {:else if activeTab === 'Plan'}
-      <h1>Planning</h1>
-      <p>Placeholder for Planning capabilities.</p>
+      <div class="content-padded">
+        <h1>Planning</h1>
+        <p>Placeholder for Planning capabilities.</p>
+      </div>
     {:else if activeTab === 'SE'}
-      <h1>Software Engineering</h1>
-      <p>Placeholder for SE capabilities.</p>
+      <iframe src="https://www.google.com/search?igu=1" title="Software Engineering" class="embedded-frame"></iframe>
     {:else if activeTab === 'UX'}
-      <h1>User Experience</h1>
-      <p>Placeholder for UX capabilities.</p>
+      <div class="content-padded">
+        <h1>User Experience</h1>
+        <p>Placeholder for UX capabilities.</p>
+      </div>
     {:else if activeTab === 'Dev'}
-      <h1>Development</h1>
-      <p>Placeholder for Development capabilities.</p>
+      <div class="content-padded">
+        <h1>Development</h1>
+        <p>Placeholder for Development capabilities.</p>
+      </div>
     {:else if activeTab === 'Doc'}
-      <h1>Documentation</h1>
-      <p>Placeholder for Documentation capabilities.</p>
+      <div class="content-padded">
+        <h1>Documentation</h1>
+        <p>Placeholder for Documentation capabilities.</p>
+      </div>
     {:else if activeTab === 'AI'}
-      <h1>Artificial Intelligence</h1>
-      <p>Placeholder for AI capabilities.</p>
+      <div class="content-padded">
+        <h1>Artificial Intelligence</h1>
+        <p>Placeholder for AI capabilities.</p>
+      </div>
     {:else if activeTab === 'Profile'}
-      <h1>User Profile</h1>
-      <p>Placeholder for User profile information.</p>
+      <div class="content-padded">
+        <h1>User Profile</h1>
+        <p>Placeholder for User profile information.</p>
+      </div>
     {/if}
   </main>
 {/if}
