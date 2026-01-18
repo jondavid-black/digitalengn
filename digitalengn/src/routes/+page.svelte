@@ -49,6 +49,19 @@
 
   const allTabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc", "AI"];
   
+  const pmTabs = [
+    { id: 'Dashboard', icon: '📊' },
+    { id: 'Scope', icon: '🎯' },
+    { id: 'Organization', icon: '👥' },
+    { id: 'Budget', icon: '💰' },
+    { id: 'Actuals', icon: '📈' },
+    { id: 'Risk & Opportunity', icon: '⚠️' },
+    { id: 'Forecast', icon: '🔮' },
+    { id: 'Schedule', icon: '📅' },
+    { id: 'Material', icon: '📦' },
+    { id: 'Travel', icon: '✈️' }
+  ];
+
   const tabUrls: Record<string, string> = {
     'Plan': 'https://svelte.dev',
     'SE': 'https://svelte.dev',
@@ -754,7 +767,7 @@
           on:click={() => activeSidebarTab = 'Dashboard'}
           title="Dashboard"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span style="font-size: 1.2rem;">📊</span>
         </button>
         <button 
           class="sidebar-item" 
@@ -762,7 +775,7 @@
           on:click={() => activeSidebarTab = 'Workspaces'}
           title="Workspaces"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          <span style="font-size: 1.2rem;">🏢</span>
         </button>
       </aside>
 
@@ -857,14 +870,14 @@
       </div>
     {:else if activeTab === 'PM'}
       <aside class="sidebar">
-        {#each ['Dashboard', 'Scope', 'Organization', 'Budget', 'Risk & Opportunity', 'Forecast', 'Schedule', 'Actuals', 'Material', 'Travel'] as pmTab}
+        {#each pmTabs as pmTab}
           <button 
             class="sidebar-item" 
-            class:active={activePMTab === pmTab} 
-            on:click={() => activePMTab = pmTab}
-            title={pmTab}
+            class:active={activePMTab === pmTab.id} 
+            on:click={() => activePMTab = pmTab.id}
+            title={pmTab.id}
           >
-            <span style="font-size: 0.6rem; text-align: center; line-height: 1;">{pmTab.substring(0, 2).toUpperCase()}</span>
+            <span style="font-size: 1.2rem;">{pmTab.icon}</span>
           </button>
         {/each}
       </aside>
