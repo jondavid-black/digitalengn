@@ -23,3 +23,5 @@ export function updateTabContent(id: string, content: string) {
 }
 
 export const editorAction = writable<{ type: string; payload?: any } | null>(null);
+
+export const drawerOpen = writable(false);

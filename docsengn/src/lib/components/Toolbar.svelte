@@ -1,0 +1,144 @@
+<script>
+  import { 
+    Folder, 
+    Play,
+    Menu,
+    ChevronDown
+  } from 'lucide-svelte';
+  import { drawerOpen, activeTab } from '$lib/stores';
+  import ComponentPanel from './ComponentPanel.svelte';
+  import StylePanel from './StylePanel.svelte';
+
+  // We might need to refactor ComponentPanel/StylePanel to accept orientation or class
+  // For now, I'll reimplement the tools here or wrapping them.
+  // Given "Strictly follow standard process", reusing components is better.
+  // I'll create new components `ToolbarTools.svelte` later if needed.
+  // For now I'll inline the tools logic or simple buttons for MVP of the toolbar.
+
+  import { 
+    Image as ImageIcon, 
+    Table as TableIcon, 
+    Square, 
+    Circle, 
+    Type,
+    Quote,
+    Bold, 
+    Italic, 
+    Underline,
+    AlignLeft,
+    AlignCenter,
+    AlignRight
+  } from 'lucide-svelte';
+  import { editorAction } from '$lib/stores';
+
+  function dispatch(type, payload) {
+    editorAction.set({ type, payload });
+  }
+
+  function toggleDrawer() {
+    drawerOpen.update(v => !v);
+  }
+</script>
+
+<div class="h-14 bg-zinc-900 border-b border-zinc-800 flex items-center px-4 gap-4 shrink-0 z-50">
+  <!-- Left: File Explorer Toggle -->
+  <button 
+    on:click={toggleDrawer}
+    class="p-2 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded-lg transition-colors flex items-center gap-2"
+    title="Toggle File Explorer"
+  >
+    <Menu size={20} />
+    <span class="text-sm font-medium">File Explorer</span>
+  </button>
+
+  <div class="w-px h-8 bg-zinc-800 mx-2"></div>
+
+  <!-- Middle: Contextual Tools -->
+  <div class="flex-1 flex items-center gap-2 overflow-x-auto custom-scrollbar">
+    {#if $activeTab?.type === 'markdown' || $activeTab?.type === 'slides'}
+      <!-- Formatting Group -->
+      <div class="flex items-center gap-1 p-1 bg-zinc-950/50 rounded-lg border border-zinc-800/50">
+        <button on:click={() => dispatch('toggleBold')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Bold">
+          <Bold size={18} />
+        </button>
+        <button on:click={() => dispatch('toggleItalic')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Italic">
+          <Italic size={18} />
+        </button>
+        <button on:click={() => dispatch('toggleUnderline')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Underline">
+          <Underline size={18} />
+        </button>
+      </div>
+
+      <!-- Alignment Group -->
+      <div class="flex items-center gap-1 p-1 bg-zinc-950/50 rounded-lg border border-zinc-800/50">
+        <button on:click={() => dispatch('setTextAlign', 'left')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Align Left">
+          <AlignLeft size={18} />
+        </button>
+        <button on:click={() => dispatch('setTextAlign', 'center')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Align Center">
+          <AlignCenter size={18} />
+        </button>
+        <button on:click={() => dispatch('setTextAlign', 'right')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Align Right">
+          <AlignRight size={18} />
+        </button>
+      </div>
+
+      <div class="w-px h-6 bg-zinc-800 mx-1"></div>
+
+      <!-- Insert Group -->
+      <div class="flex items-center gap-1">
+        <button on:click={() => dispatch('insertText')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Insert Text">
+          <Type size={18} />
+          <span class="hidden xl:inline">Text</span>
+        </button>
+        <button on:click={() => dispatch('toggleHeading')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Heading">
+          <Type size={18} class="font-bold" />
+          <span class="hidden xl:inline">Heading</span>
+        </button>
+        <button on:click={() => dispatch('addImage')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Image">
+          <ImageIcon size={18} />
+          <span class="hidden xl:inline">Image</span>
+        </button>
+        <button on:click={() => dispatch('insertTable')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Table">
+          <TableIcon size={18} />
+          <span class="hidden xl:inline">Table</span>
+        </button>
+        <button on:click={() => dispatch('toggleBlockquote')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Quote">
+          <Quote size={18} />
+          <span class="hidden xl:inline">Quote</span>
+        </button>
+      </div>
+
+      {#if $activeTab?.type === 'slides'}
+        <div class="w-px h-6 bg-zinc-800 mx-1"></div>
+        <!-- Slide Specific -->
+        <div class="flex items-center gap-1">
+           <button on:click={() => dispatch('insertShape', 'rect')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Rectangle">
+            <Square size={18} />
+            <span class="hidden xl:inline">Rect</span>
+          </button>
+          <button on:click={() => dispatch('insertShape', 'circle')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Circle">
+            <Circle size={18} />
+            <span class="hidden xl:inline">Circle</span>
+          </button>
+        </div>
+      {/if}
+
+    {:else}
+      <span class="text-sm text-zinc-500 italic">No document open</span>
+    {/if}
+  </div>
+
+  <!-- Right: Actions -->
+  <div class="flex items-center gap-2">
+     {#if $activeTab}
+      <a 
+        href="/preview?filename={encodeURIComponent($activeTab.title)}" 
+        target="_blank"
+        class="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg transition-colors text-sm font-medium"
+      >
+        <Play size={16} />
+        Preview
+      </a>
+    {/if}
+  </div>
+</div>
