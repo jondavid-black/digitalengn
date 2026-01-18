@@ -8,7 +8,7 @@
   let showUserDropdown = false;
   let theme = 'dark';
 
-  const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc"];
+  const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc", "AI"];
 
   function handleLogin() {
     if (username === 'admin' && password === 'admin') {
@@ -378,6 +378,9 @@
     {:else if activeTab === 'Doc'}
       <h1>Documentation</h1>
       <p>Placeholder for Documentation capabilities.</p>
+    {:else if activeTab === 'AI'}
+      <h1>Artificial Intelligence</h1>
+      <p>Placeholder for AI capabilities.</p>
     {:else if activeTab === 'Profile'}
       <h1>User Profile</h1>
       <p>Placeholder for User profile information.</p>
