@@ -3,12 +3,18 @@
   let password = '';
   let isLoggedIn = false;
   let activeTab = 'Home';
+  let isPinned = false;
+  let forceShowToolbar = false;
 
   const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc", "User"];
 
   function handleLogin() {
     if (username === 'admin' && password === 'admin') {
       isLoggedIn = true;
+      forceShowToolbar = true;
+      setTimeout(() => {
+        forceShowToolbar = false;
+      }, 3000);
     } else {
       alert('Invalid credentials');
     }
@@ -19,6 +25,8 @@
     username = '';
     password = '';
     activeTab = 'Home';
+    isPinned = false;
+    forceShowToolbar = false;
   }
 </script>
 
@@ -91,8 +99,12 @@
     transition: transform 0.3s ease-in-out;
   }
 
-  .toolbar:hover, .toolbar-trigger:hover + .toolbar {
+  .toolbar:hover, .toolbar-trigger:hover + .toolbar, .toolbar.force-show, .toolbar.pinned {
     transform: translateY(0);
+  }
+
+  .toolbar.pinned {
+    border-bottom: 2px solid #007bff;
   }
 
   .toolbar-trigger {
@@ -130,12 +142,33 @@
     font-weight: bold;
   }
 
+  .pin-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+    opacity: 0.6;
+  }
+
+  .pin-btn:hover {
+    opacity: 1;
+  }
+
+  .pin-btn.active {
+    opacity: 1;
+  }
+
   .content {
     margin-top: 20px;
     padding: 2rem;
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+    transition: margin-top 0.3s ease-in-out;
+  }
+
+  .content.shifted {
+    margin-top: 60px;
   }
 
   .logout-btn {
@@ -164,8 +197,17 @@
   </div>
 {:else}
   <div class="toolbar-trigger"></div>
-  <nav class="toolbar">
+  <nav class="toolbar" class:force-show={forceShowToolbar} class:pinned={isPinned}>
     <div class="toolbar-inner">
+      <button 
+        class="toolbar-item pin-btn" 
+        class:active={isPinned}
+        on:click={() => isPinned = !isPinned}
+        title={isPinned ? "Unpin Toolbar" : "Pin Toolbar"}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill={isPinned ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.79-.9A2 2 0 0 1 15 10.76V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.76a2 2 0 0 1-1.1 1.79l-1.79.9A2 2 0 0 0 5 15.24Z"></path></svg>
+      </button>
+
       {#each tabs as tab}
         <button 
           class="toolbar-item" 
@@ -180,7 +222,7 @@
 
   <button class="logout-btn" on:click={handleLogout}>Logout</button>
 
-  <main class="content">
+  <main class="content" class:shifted={isPinned}>
     {#if activeTab === 'Home'}
       <h1>Home Screen</h1>
       <p>Welcome to Digital Engine. This is the main dashboard.</p>
