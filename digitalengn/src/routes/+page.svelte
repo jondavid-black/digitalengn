@@ -133,13 +133,6 @@
     justify-content: center;
   }
 
-  .toolbar-left {
-    position: absolute;
-    left: 1rem;
-    display: flex;
-    align-items: center;
-  }
-
   .toolbar-center {
     display: flex;
     gap: 1.5rem;
@@ -151,6 +144,7 @@
     right: 1rem;
     display: flex;
     align-items: center;
+    gap: 0.5rem;
   }
 
   .toolbar-item {
@@ -178,7 +172,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 0.5rem;
     opacity: 0.6;
   }
 
@@ -268,17 +261,6 @@
   <div class="toolbar-trigger"></div>
   <nav class="toolbar" class:force-show={forceShowToolbar} class:pinned={isPinned}>
     <div class="toolbar-inner">
-      <div class="toolbar-left">
-        <button 
-          class="toolbar-item pin-btn" 
-          class:active={isPinned}
-          on:click={() => isPinned = !isPinned}
-          title={isPinned ? "Unpin Toolbar" : "Pin Toolbar"}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill={isPinned ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.79-.9A2 2 0 0 1 15 10.76V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.76a2 2 0 0 1-1.1 1.79l-1.79.9A2 2 0 0 0 5 15.24Z"></path></svg>
-        </button>
-      </div>
-
       <div class="toolbar-center">
         {#each tabs as tab}
           <button 
@@ -292,6 +274,14 @@
       </div>
 
       <div class="toolbar-right">
+        <button 
+          class="toolbar-item pin-btn" 
+          class:active={isPinned}
+          on:click={() => isPinned = !isPinned}
+          title={isPinned ? "Unpin Toolbar" : "Pin Toolbar"}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill={isPinned ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.79-.9A2 2 0 0 1 15 10.76V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.76a2 2 0 0 1-1.1 1.79l-1.79.9A2 2 0 0 0 5 15.24Z"></path></svg>
+        </button>
         <div class="avatar-container">
           <button class="avatar-circle" on:click={() => showUserDropdown = !showUserDropdown}>
             AD
