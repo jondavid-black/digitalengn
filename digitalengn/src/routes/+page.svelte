@@ -19,6 +19,7 @@
   let isLoggedIn = false;
   let activeTab = 'Home';
   let activeSidebarTab = 'Dashboard';
+  let activePMTab = 'Dashboard';
   let isPinned = true;
   let forceShowToolbar = false;
   let showUserDropdown = false;
@@ -855,9 +856,25 @@
         {/if}
       </div>
     {:else if activeTab === 'PM'}
-      <div class="content-padded">
-        <h1>Project Management: {activeNode?.name || 'Unknown'}</h1>
-        <p>Capabilities for {activeNode?.type || 'item'} management.</p>
+      <aside class="sidebar">
+        {#each ['Dashboard', 'Scope', 'Organization', 'Budget', 'Risk & Opportunity', 'Forecast', 'Schedule', 'Actuals', 'Material', 'Travel'] as pmTab}
+          <button 
+            class="sidebar-item" 
+            class:active={activePMTab === pmTab} 
+            on:click={() => activePMTab = pmTab}
+            title={pmTab}
+          >
+            <span style="font-size: 0.6rem; text-align: center; line-height: 1;">{pmTab.substring(0, 2).toUpperCase()}</span>
+          </button>
+        {/each}
+      </aside>
+      <div class="main-view">
+        <div class="content-padded">
+          <h1>{activePMTab}: {activeNode?.name || 'Unknown'}</h1>
+          <div class="card">
+            <p>Stub content for {activePMTab} baseline management.</p>
+          </div>
+        </div>
       </div>
     {:else if activeTab === 'Plan'}
       <EmbeddedPage src={tabUrls['Plan'] || ''} title="Planning" />
