@@ -12,13 +12,10 @@
   import ComponentPanel from "$lib/components/ComponentPanel.svelte";
   import StylePanel from "$lib/components/StylePanel.svelte";
   import TabManager from "$lib/components/TabManager.svelte";
+  import { tabs, activeTabId } from "$lib/stores";
 
   const activeRailItem = writable(null);
   const drawerOpen = writable(false);
-  const tabs = writable([
-    { id: '1', title: 'Introduction.md', type: 'markdown', content: '# Welcome\n\nThis is a Tiptap based markdown editor.' }
-  ]);
-  const activeTabId = writable('1');
 
   const railItems = [
     { id: 'files', icon: Files, label: 'File Explorer', component: FileExplorer },
@@ -87,7 +84,7 @@
   <!-- Main Content Area -->
   <main class="flex-1 flex flex-col min-w-0 bg-zinc-950">
     <!-- Tabs Bar -->
-    <TabManager {tabs} {activeTabId} />
+    <TabManager />
 
     <!-- Editor Pane -->
     <div class="flex-1 overflow-hidden relative">

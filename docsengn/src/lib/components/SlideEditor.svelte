@@ -5,6 +5,7 @@
   import CharacterCount from '@tiptap/extension-character-count';
   import Typography from '@tiptap/extension-typography';
   import { Markdown } from 'tiptap-markdown';
+  import { MonitorPlay } from 'lucide-svelte';
 
   export let content = '';
   export let onChange = (markdown) => {};
@@ -39,14 +40,19 @@
     }
   });
 
-  // Watch for external content changes
   $: if (editor && content !== editor.storage.markdown.getMarkdown()) {
     editor.commands.setContent(content, false);
   }
 </script>
 
-<div class="w-full h-full overflow-y-auto bg-zinc-950 custom-scrollbar">
-  <div bind:this={element} />
+<div class="flex flex-col h-full bg-zinc-950">
+  <div class="flex items-center gap-2 px-4 py-2 bg-zinc-900/50 border-b border-zinc-800 text-zinc-400 text-sm">
+    <MonitorPlay size={16} />
+    <span>Slide Editor Mode</span>
+  </div>
+  <div class="flex-1 overflow-y-auto custom-scrollbar">
+    <div bind:this={element} />
+  </div>
 </div>
 
 <style>

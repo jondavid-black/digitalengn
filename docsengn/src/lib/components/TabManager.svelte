@@ -1,11 +1,6 @@
 <script>
-  import { writable } from 'svelte/store';
   import { PlusSquare, X } from 'lucide-svelte';
-
-  export let tabs = writable([
-    { id: '1', title: 'Untitled.md', type: 'markdown', content: '' }
-  ]);
-  export let activeTabId = writable('1');
+  import { tabs, activeTabId } from '$lib/stores';
 
   function addTab() {
     const id = globalThis.crypto.randomUUID();
