@@ -1,8 +1,9 @@
-import simpleGit, { type SimpleGit } from 'simple-git';
-import fs from 'fs/promises';
-import path from 'path';
+import simpleGit, { type SimpleGit } from "simple-git";
+import fs from "fs/promises";
+import path from "path";
 
-const DEFAULT_CONTENT_DIR = process.env.CONTENT_DIR || path.resolve('data/content');
+const DEFAULT_CONTENT_DIR =
+  process.env.CONTENT_DIR || path.resolve("data/content");
 
 export class GitService {
   private git: SimpleGit;
@@ -23,30 +24,32 @@ export class GitService {
     const isRepo = await this.git.checkIsRepo();
     if (!isRepo) {
       await this.git.init();
-      await this.git.addConfig('user.name', 'DocsEngn Bot');
-      await this.git.addConfig('user.email', 'bot@docsengn.local');
+      await this.git.addConfig("user.name", "DocsEngn Bot");
+      await this.git.addConfig("user.email", "bot@docsengn.local");
     }
   }
 
-  async listFiles(subpath: string = ''): Promise<{ name: string; type: 'file' | 'folder' }[]> {
+  async listFiles(
+    subpath: string = "",
+  ): Promise<{ name: string; type: "file" | "folder" }[]> {
     await this.init();
-    
+
     // Validate path
     const safeSubpath = path.resolve(this.contentDir, subpath);
     if (!safeSubpath.startsWith(this.contentDir)) {
-      throw new Error('Invalid path');
+      throw new Error("Invalid path");
     }
 
     try {
       const entries = await fs.readdir(safeSubpath, { withFileTypes: true });
       return entries
-        .filter(entry => !entry.name.startsWith('.git'))
-        .map(entry => ({
+        .filter((entry) => !entry.name.startsWith(".git"))
+        .map((entry) => ({
           name: entry.name,
-          type: entry.isDirectory() ? 'folder' : 'file'
+          type: entry.isDirectory() ? "folder" : "file",
         }));
     } catch (e) {
-      if ((e as any).code === 'ENOENT') return [];
+      if ((e as any).code === "ENOENT") return [];
       throw e;
     }
   }
@@ -55,13 +58,13 @@ export class GitService {
     await this.init();
     const safePath = path.resolve(this.contentDir, folderPath);
     if (!safePath.startsWith(this.contentDir)) {
-      throw new Error('Invalid path');
+      throw new Error("Invalid path");
     }
 
     await fs.mkdir(safePath, { recursive: true });
     // Create .gitkeep to ensure folder is tracked by git
-    await fs.writeFile(path.join(safePath, '.gitkeep'), '', 'utf-8');
-    await this.git.add(path.join(folderPath, '.gitkeep'));
+    await fs.writeFile(path.join(safePath, ".gitkeep"), "", "utf-8");
+    await this.git.add(path.join(folderPath, ".gitkeep"));
     await this.git.commit(message || `Create folder ${folderPath}`);
   }
 
@@ -69,22 +72,26 @@ export class GitService {
     await this.init();
     const safePath = path.resolve(this.contentDir, filename);
     if (!safePath.startsWith(this.contentDir)) {
-      throw new Error('Invalid path');
+      throw new Error("Invalid path");
     }
-    return fs.readFile(safePath, 'utf-8');
+    return fs.readFile(safePath, "utf-8");
   }
 
-  async saveFile(filename: string, content: string, message: string): Promise<void> {
+  async saveFile(
+    filename: string,
+    content: string,
+    message: string,
+  ): Promise<void> {
     await this.init();
     const safePath = path.resolve(this.contentDir, filename);
     if (!safePath.startsWith(this.contentDir)) {
-      throw new Error('Invalid path');
+      throw new Error("Invalid path");
     }
 
     // Ensure directory exists
     await fs.mkdir(path.dirname(safePath), { recursive: true });
 
-    await fs.writeFile(safePath, content, 'utf-8');
+    await fs.writeFile(safePath, content, "utf-8");
     await this.git.add(filename);
     await this.git.commit(message || `Update ${filename}`);
   }

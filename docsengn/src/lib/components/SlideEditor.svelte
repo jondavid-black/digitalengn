@@ -1,10 +1,8 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { Editor } from '@tiptap/core';
-  import StarterKit from '@tiptap/starter-kit';
-  import CharacterCount from '@tiptap/extension-character-count';
-  import Typography from '@tiptap/extension-typography';
-  import { Markdown } from 'tiptap-markdown';
+  import { getEditorExtensions } from '$lib/editorConfig';
+  import { editorAction } from '$lib/stores';
   import { MonitorPlay } from 'lucide-svelte';
 
   export let content = '';
@@ -12,16 +10,12 @@
 
   let element;
   let editor;
+  let unsubscribe;
 
   onMount(() => {
     editor = new Editor({
       element: element,
-      extensions: [
-        StarterKit,
-        CharacterCount,
-        Typography,
-        Markdown
-      ],
+      extensions: getEditorExtensions(),
       content: content,
       onUpdate: ({ editor }) => {
         onChange(editor.storage.markdown.getMarkdown());
@@ -32,9 +26,52 @@
         },
       },
     });
+
+    unsubscribe = editorAction.subscribe(action => {
+      if (!action || !editor) return;
+      
+      switch (action.type) {
+        case 'insertText':
+          editor.chain().focus().insertContent('New Text Block').run();
+          break;
+        case 'toggleHeading':
+          editor.chain().focus().toggleHeading({ level: 2 }).run();
+          break;
+        case 'toggleBlockquote':
+          editor.chain().focus().toggleBlockquote().run();
+          break;
+        case 'addImage':
+          editor.chain().focus().insertContent('![Image](https://placehold.co/600x400)').run();
+          break;
+        case 'insertTable':
+          // Table extension not loaded yet, inserting markdown table representation
+          editor.chain().focus().insertContent('\n| Header 1 | Header 2 |\n| --- | --- |\n| Cell 1 | Cell 2 |\n').run();
+          break;
+        case 'insertShape':
+          editor.chain().focus().insertContent(`\n> Shape: ${action.payload}\n`).run();
+          break;
+        case 'toggleBold':
+          editor.chain().focus().toggleBold().run();
+          break;
+        case 'toggleItalic':
+          editor.chain().focus().toggleItalic().run();
+          break;
+        case 'toggleUnderline':
+          editor.chain().focus().toggleUnderline().run();
+          break;
+        case 'setTextAlign':
+          // Requires extension-text-align
+          // editor.chain().focus().setTextAlign(action.payload).run();
+          break;
+      }
+      
+      // Reset action to null
+      editorAction.set(null);
+    });
   });
 
   onDestroy(() => {
+    if (unsubscribe) unsubscribe();
     if (editor) {
       editor.destroy();
     }

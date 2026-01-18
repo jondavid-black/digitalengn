@@ -1,10 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { Editor } from '@tiptap/core';
-  import StarterKit from '@tiptap/starter-kit';
-  import CharacterCount from '@tiptap/extension-character-count';
-  import Typography from '@tiptap/extension-typography';
-  import { Markdown } from 'tiptap-markdown';
+  import { getEditorExtensions } from '$lib/editorConfig';
   import { editorAction } from '$lib/stores';
 
   export let content = '';
@@ -19,12 +16,7 @@
     editor = new Editor({
       element: element,
       editable: editable,
-      extensions: [
-        StarterKit,
-        CharacterCount,
-        Typography,
-        Markdown
-      ],
+      extensions: getEditorExtensions(),
       content: content,
       onUpdate: ({ editor }) => {
         onChange(editor.storage.markdown.getMarkdown());
@@ -66,8 +58,7 @@
           editor.chain().focus().toggleItalic().run();
           break;
         case 'toggleUnderline':
-          // Requires extension-underline, fallback or ignored for now
-          // editor.chain().focus().toggleUnderline().run();
+          editor.chain().focus().toggleUnderline().run();
           break;
         case 'setTextAlign':
           // Requires extension-text-align
