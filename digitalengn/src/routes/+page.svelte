@@ -14,8 +14,10 @@
   const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc", "AI"];
   
   const tabUrls: Record<string, string> = {
-    'SE': 'https://www.google.com/search?igu=1',
-    'Dev': 'https://svelte.dev'
+    'Plan': 'https://www.openproject.org/',
+    'SE': 'https://www.sysgit.io/',
+    'UX': 'https://penpot.app/',
+    'Dev': 'https://code.visualstudio.com/'
   };
 
   function handleLogin() {
@@ -423,19 +425,13 @@
         <p>Placeholder for PM capabilities.</p>
       </div>
     {:else if activeTab === 'Plan'}
-      <div class="content-padded">
-        <h1>Planning</h1>
-        <p>Placeholder for Planning capabilities.</p>
-      </div>
+      <EmbeddedPage src={tabUrls['Plan'] || ''} title="Planning" />
     {:else if activeTab === 'SE'}
-      <EmbeddedPage src="https://www.google.com/search?igu=1" title="Software Engineering" />
+      <EmbeddedPage src={tabUrls['SE'] || ''} title="Software Engineering" />
     {:else if activeTab === 'UX'}
-      <div class="content-padded">
-        <h1>User Experience</h1>
-        <p>Placeholder for UX capabilities.</p>
-      </div>
+      <EmbeddedPage src={tabUrls['UX'] || ''} title="User Experience" />
     {:else if activeTab === 'Dev'}
-      <EmbeddedPage src="https://svelte.dev" title="Development" />
+      <EmbeddedPage src={tabUrls['Dev'] || ''} title="Development" />
     {:else if activeTab === 'Doc'}
       <div class="content-padded">
         <h1>Documentation</h1>
