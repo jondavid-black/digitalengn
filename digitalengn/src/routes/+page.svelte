@@ -87,6 +87,21 @@
     background: white;
     border-bottom: 1px solid #eee;
     z-index: 1000;
+    transform: translateY(-90%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .toolbar:hover, .toolbar-trigger:hover + .toolbar {
+    transform: translateY(0);
+  }
+
+  .toolbar-trigger {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    z-index: 1001;
   }
 
   .toolbar-inner {
@@ -116,7 +131,7 @@
   }
 
   .content {
-    margin-top: 60px;
+    margin-top: 20px;
     padding: 2rem;
     max-width: 1200px;
     margin-left: auto;
@@ -148,6 +163,7 @@
     </div>
   </div>
 {:else}
+  <div class="toolbar-trigger"></div>
   <nav class="toolbar">
     <div class="toolbar-inner">
       {#each tabs as tab}
