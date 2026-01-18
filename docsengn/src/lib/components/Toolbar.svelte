@@ -56,7 +56,7 @@
   <div class="w-px h-8 bg-zinc-800 mx-2"></div>
 
   <!-- Middle: Contextual Tools -->
-  <div class="flex-1 flex items-center gap-2 overflow-x-auto custom-scrollbar">
+  <div class="flex-1 flex items-center gap-2 overflow-x-visible custom-scrollbar">
     {#if $activeTab?.type === 'markdown' || $activeTab?.type === 'slides'}
       <!-- Formatting Group -->
       <div class="flex items-center gap-1 p-1 bg-zinc-950/50 rounded-lg border border-zinc-800/50">
