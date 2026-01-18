@@ -6,6 +6,7 @@
   let isPinned = false;
   let forceShowToolbar = false;
   let showUserDropdown = false;
+  let theme = 'light';
 
   const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc"];
 
@@ -35,6 +36,10 @@
     activeTab = 'Profile';
     showUserDropdown = false;
   }
+
+  function toggleTheme() {
+    theme = theme === 'light' ? 'dark' : 'light';
+  }
 </script>
 
 <style>
@@ -42,6 +47,35 @@
     margin: 0;
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .app-container {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --toolbar-bg: #ffffff;
+    --toolbar-border: #eeeeee;
+    --login-bg: #f5f5f5;
+    --card-bg: #ffffff;
+    --item-hover: #f0f0f0;
+    --item-text: #666666;
+    
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+
+  .app-container.dark {
+    --bg-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --toolbar-bg: #2d2d2d;
+    --toolbar-border: #404040;
+    --login-bg: #121212;
+    --card-bg: #2d2d2d;
+    --item-hover: #3d3d3d;
+    --item-text: #aaaaaa;
   }
 
   .login-container {
@@ -50,12 +84,12 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #f5f5f5;
+    background-color: var(--login-bg);
   }
 
   .login-box {
     padding: 2rem;
-    background: white;
+    background: var(--card-bg);
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     display: flex;
@@ -72,8 +106,10 @@
 
   .login-box input {
     padding: 0.75rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--toolbar-border);
     border-radius: 4px;
+    background: var(--bg-color);
+    color: var(--text-color);
   }
 
   .login-box button {
@@ -99,11 +135,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: white;
-    border-bottom: 1px solid #eee;
+    background: var(--toolbar-bg);
+    border-bottom: 1px solid var(--toolbar-border);
     z-index: 1000;
     transform: translateY(-90%);
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, background-color 0.3s, border-color 0.3s;
   }
 
   .toolbar:hover, .toolbar-trigger:hover + .toolbar, .toolbar.force-show, .toolbar.pinned {
@@ -149,7 +185,7 @@
 
   .toolbar-item {
     font-size: 0.85rem;
-    color: #666;
+    color: var(--item-text);
     cursor: pointer;
     padding: 4px 8px;
     border-radius: 4px;
@@ -159,8 +195,8 @@
   }
 
   .toolbar-item:hover {
-    background: #f0f0f0;
-    color: #333;
+    background: var(--item-hover);
+    color: var(--text-color);
   }
 
   .toolbar-item.active {
@@ -168,19 +204,23 @@
     font-weight: bold;
   }
 
-  .pin-btn {
+  .pin-btn, .theme-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0.6;
+    color: var(--item-text);
   }
 
-  .pin-btn:hover {
+  .pin-btn:hover, .theme-btn:hover {
     opacity: 1;
+    color: var(--text-color);
+    background: var(--item-hover);
   }
 
   .pin-btn.active {
     opacity: 1;
+    color: #007bff;
   }
 
   .avatar-container {
@@ -209,8 +249,8 @@
     position: absolute;
     top: 35px;
     right: 0;
-    background: white;
-    border: 1px solid #eee;
+    background: var(--toolbar-bg);
+    border: 1px solid var(--toolbar-border);
     border-radius: 4px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     display: flex;
@@ -222,7 +262,7 @@
   .dropdown-item {
     padding: 8px 12px;
     font-size: 0.85rem;
-    color: #333;
+    color: var(--text-color);
     text-align: left;
     background: none;
     border: none;
@@ -231,7 +271,7 @@
   }
 
   .dropdown-item:hover {
-    background: #f5f5f5;
+    background: var(--item-hover);
   }
 
   .content {
@@ -248,6 +288,7 @@
   }
 </style>
 
+<div class="app-container" class:dark={theme === 'dark'}>
 {#if !isLoggedIn}
   <div class="login-container">
     <div class="login-box">
@@ -274,6 +315,17 @@
       </div>
 
       <div class="toolbar-right">
+        <button 
+          class="toolbar-item theme-btn" 
+          on:click={toggleTheme}
+          title={theme === 'light' ? "Switch to Dark Mode" : "Switch to Light Mode"}
+        >
+          {#if theme === 'light'}
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          {:else}
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          {/if}
+        </button>
         <button 
           class="toolbar-item pin-btn" 
           class:active={isPinned}
@@ -325,3 +377,4 @@
     {/if}
   </main>
 {/if}
+</div>
