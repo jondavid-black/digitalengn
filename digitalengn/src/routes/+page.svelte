@@ -3,7 +3,7 @@
   import EmbeddedPage from "$lib/components/EmbeddedPage.svelte";
 
   type NodeType = 'Portfolio' | 'Program' | 'Project';
-  type DataSet = 'Hierarchy' | 'Budget' | 'Organization' | 'Forecast' | 'Scope' | 'Risk' | 'Schedule' | 'Actuals' | 'Material' | 'Travel' | 'General';
+  type DataSet = 'Hierarchy' | 'Budget' | 'Organization' | 'Forecast' | 'Scope' | 'Risk' | 'Schedule' | 'Actuals' | 'Material' | 'Travel' | 'General' | 'SE' | 'HW' | 'SW';
 
   interface Repository {
     url: string;
@@ -31,7 +31,7 @@
   let showUserDropdown = false;
   let theme = 'dark';
 
-  const ALL_DATA_SETS: DataSet[] = ['Hierarchy', 'Budget', 'Organization', 'Forecast', 'Scope', 'Risk', 'Schedule', 'Actuals', 'Material', 'Travel', 'General'];
+  const ALL_DATA_SETS: DataSet[] = ['Hierarchy', 'Budget', 'Organization', 'Forecast', 'Scope', 'Risk', 'Schedule', 'Actuals', 'Material', 'Travel', 'General', 'SE', 'HW', 'SW'];
 
   // State for Hierarchy
   let nodes: Node[] = [
@@ -45,6 +45,7 @@
       repositories: [
         { url: 'https://github.com/org/root-repo', dataSets: [...ALL_DATA_SETS] }
       ]
+
     }
   ];
   let activeNodeId = 'root';
