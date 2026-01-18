@@ -2,6 +2,18 @@
   import { getInitials } from "$lib/utils"
   import EmbeddedPage from "$lib/components/EmbeddedPage.svelte";
 
+  type NodeType = 'Portfolio' | 'Program' | 'Project';
+
+  interface Node {
+    id: string;
+    name: string;
+    type: NodeType;
+    gitRepoUrl: string;
+    description: string;
+    parentId: string | null;
+    enabledFeatures: string[];
+  }
+
   let username = '';
   let password = '';
   let isLoggedIn = false;
@@ -11,7 +23,29 @@
   let showUserDropdown = false;
   let theme = 'dark';
 
-  const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc", "AI"];
+  // State for Hierarchy
+  let nodes: Node[] = [
+    {
+      id: 'root',
+      name: 'Global Portfolio',
+      type: 'Portfolio',
+      gitRepoUrl: '',
+      description: 'The top level portfolio for all operations.',
+      parentId: null,
+      enabledFeatures: ['PM', 'Plan', 'SE', 'UX', 'Dev', 'Doc', 'AI']
+    }
+  ];
+  let activeNodeId = 'root';
+  let navigationStack = ['root'];
+
+  $: activeNode = nodes.find(n => n.id === activeNodeId) || nodes[0];
+  $: currentNavNodeId = navigationStack[navigationStack.length - 1];
+  $: currentNavNode = nodes.find(n => n.id === currentNavNodeId) || nodes[0];
+  $: childNodes = nodes.filter(n => n.parentId === (currentNavNodeId ?? null));
+  
+  $: availableFeatures = ['Home', ...(activeNode?.enabledFeatures || [])];
+
+  const allTabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc", "AI"];
   
   const tabUrls: Record<string, string> = {
     'Plan': 'https://svelte.dev',
@@ -19,6 +53,71 @@
     'UX': 'https://penpot.app/',
     'Dev': 'https://svelte.dev'
   };
+
+  // Node Management Functions
+  function createNode(type: NodeType) {
+    const name = prompt(`Enter name for new ${type}:`);
+    if (!name) return;
+
+    const newNode: Node = {
+      id: Math.random().toString(36).substr(2, 9),
+      name,
+      type,
+      gitRepoUrl: '',
+      description: '',
+      parentId: currentNavNodeId || null,
+      enabledFeatures: []
+    };
+
+    nodes = [...nodes, newNode];
+  }
+
+  function deleteNode(id: string) {
+    if (id === 'root') return;
+    if (!confirm('Are you sure you want to delete this item and all its children?')) return;
+    
+    const getDescendants = (parentId: string): string[] => {
+      const children = nodes.filter(n => n.parentId === parentId);
+      return children.reduce((acc, child) => [...acc, child.id, ...getDescendants(child.id)], [] as string[]);
+    };
+
+    const toDelete = [id, ...getDescendants(id)];
+    nodes = nodes.filter(n => !toDelete.includes(n.id));
+
+    if (activeNodeId && toDelete.includes(activeNodeId)) {
+      activeNodeId = 'root';
+    }
+    if (currentNavNodeId && toDelete.includes(currentNavNodeId)) {
+      navigationStack = ['root'];
+    }
+  }
+
+  function activateNode(id: string) {
+    activeNodeId = id;
+  }
+
+  function navigateTo(id: string) {
+    navigationStack = [...navigationStack, id];
+  }
+
+  function navigateBack() {
+    if (navigationStack.length > 1) {
+      navigationStack = navigationStack.slice(0, -1);
+    }
+  }
+
+  function toggleFeature(nodeId: string, feature: string) {
+    const node = nodes.find(n => n.id === nodeId);
+    if (!node) return;
+    
+    const index = node.enabledFeatures.indexOf(feature);
+    if (index === -1) {
+      node.enabledFeatures = [...node.enabledFeatures, feature];
+    } else {
+      node.enabledFeatures = node.enabledFeatures.filter(f => f !== feature);
+    }
+    nodes = [...nodes];
+  }
 
   function handleLogin() {
     if (username === 'admin' && password === 'admin') {
@@ -37,7 +136,7 @@
     username = '';
     password = '';
     activeTab = 'Home';
-    isPinned = false;
+    isPinned = true;
     forceShowToolbar = false;
     showUserDropdown = false;
   }
@@ -185,10 +284,20 @@
     display: flex;
     gap: 1.5rem;
     width: 100%;
-    max-width: 1200px;
     padding: 0 1rem;
     position: relative;
     justify-content: center;
+  }
+
+  .active-node-name {
+    position: absolute;
+    left: 1rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #007bff;
+    display: flex;
+    align-items: center;
+    height: 100%;
   }
 
   .toolbar-center {
@@ -339,6 +448,132 @@
     width: 100%;
     box-sizing: border-box;
   }
+
+  /* Hierarchy UI Styles */
+  .hierarchy-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .nav-crumb {
+    color: #007bff;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+  }
+
+  .nav-crumb:hover {
+    text-decoration: underline;
+  }
+
+  .node-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .node-card {
+    padding: 1.5rem;
+    background: var(--toolbar-bg);
+    border: 1px solid var(--toolbar-border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    transition: transform 0.2s;
+  }
+
+  .node-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .node-card.active {
+    border: 2px solid #007bff;
+  }
+
+  .node-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .node-type-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #e9ecef;
+    color: #495057;
+  }
+
+  .node-card.active .node-type-badge {
+    background: #007bff;
+    color: white;
+  }
+
+  .node-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  .btn-small {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid var(--toolbar-border);
+    background: var(--bg-color);
+    color: var(--text-color);
+  }
+
+  .btn-small:hover {
+    background: var(--item-hover);
+  }
+
+  .btn-activate {
+    background: #28a745;
+    color: white;
+    border: none;
+  }
+
+  .btn-delete {
+    background: #dc3545;
+    color: white;
+    border: none;
+  }
+
+  .feature-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--toolbar-border);
+  }
+
+  .feature-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+
+  .add-node-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
 </style>
 
 <div class="app-container">
@@ -355,8 +590,12 @@
   <div class="toolbar-trigger"></div>
   <nav class="toolbar" class:force-show={forceShowToolbar} class:pinned={isPinned}>
     <div class="toolbar-inner">
+      <div class="active-node-name">
+        {activeNode?.name || 'No Selection'}
+      </div>
+
       <div class="toolbar-center">
-        {#each tabs as tab}
+        {#each availableFeatures as tab}
           <button 
             class="toolbar-item" 
             class:active={activeTab === tab}
@@ -416,13 +655,66 @@
   <main class="content" class:shifted={isPinned}>
     {#if activeTab === 'Home'}
       <div class="content-padded">
-        <h1>Home Screen</h1>
-        <p>Welcome to Digital Engine. This is the main dashboard.</p>
+        <h1>Hierarchy Management</h1>
+        
+        <div class="hierarchy-nav">
+          <button class="nav-crumb" on:click={() => navigationStack = ['root']}>Global</button>
+          {#each navigationStack.slice(1) as nodeId, i}
+            <span>/</span>
+            <button class="nav-crumb" on:click={() => navigationStack = navigationStack.slice(0, i + 2)}>
+              {nodes.find(n => n.id === nodeId)?.name}
+            </button>
+          {/each}
+        </div>
+
+        <div class="add-node-bar">
+          {#if currentNavNode?.type === 'Portfolio'}
+            <button class="btn-small" on:click={() => createNode('Portfolio')}>+ Portfolio</button>
+            <button class="btn-small" on:click={() => createNode('Program')}>+ Program</button>
+            <button class="btn-small" on:click={() => createNode('Project')}>+ Project</button>
+          {:else if currentNavNode?.type === 'Program'}
+            <button class="btn-small" on:click={() => createNode('Program')}>+ Program</button>
+            <button class="btn-small" on:click={() => createNode('Project')}>+ Project</button>
+          {:else if currentNavNode?.type === 'Project'}
+            <button class="btn-small" on:click={() => createNode('Project')}>+ Project</button>
+          {/if}
+        </div>
+
+        <div class="node-list">
+          {#each childNodes as node}
+            <div class="node-card" class:active={node.id === activeNodeId}>
+              <div class="node-header">
+                <h3>{node.name}</h3>
+                <span class="node-type-badge">{node.type}</span>
+              </div>
+              <p>{node.description || 'No description provided.'}</p>
+              
+              <div class="feature-toggles">
+                {#each allTabs.slice(1) as feature}
+                  <label class="feature-toggle">
+                    <input 
+                      type="checkbox" 
+                      checked={node.enabledFeatures.includes(feature)} 
+                      on:change={() => toggleFeature(node.id, feature)}
+                    />
+                    {feature}
+                  </label>
+                {/each}
+              </div>
+
+              <div class="node-actions">
+                <button class="btn-small" on:click={() => navigateTo(node.id)}>Open</button>
+                <button class="btn-small btn-activate" on:click={() => activateNode(node.id)}>Activate</button>
+                <button class="btn-small btn-delete" on:click={() => deleteNode(node.id)}>Delete</button>
+              </div>
+            </div>
+          {/each}
+        </div>
       </div>
     {:else if activeTab === 'PM'}
       <div class="content-padded">
-        <h1>Project Management</h1>
-        <p>Placeholder for PM capabilities.</p>
+        <h1>Project Management: {activeNode?.name || 'Unknown'}</h1>
+        <p>Capabilities for {activeNode?.type || 'item'} management.</p>
       </div>
     {:else if activeTab === 'Plan'}
       <EmbeddedPage src={tabUrls['Plan'] || ''} title="Planning" />
@@ -434,18 +726,18 @@
       <EmbeddedPage src={tabUrls['Dev'] || ''} title="Development" />
     {:else if activeTab === 'Doc'}
       <div class="content-padded">
-        <h1>Documentation</h1>
-        <p>Placeholder for Documentation capabilities.</p>
+        <h1>Documentation: {activeNode?.name || 'Unknown'}</h1>
+        <p>Documentation for this {activeNode?.type || 'item'}.</p>
       </div>
     {:else if activeTab === 'AI'}
       <div class="content-padded">
-        <h1>Artificial Intelligence</h1>
-        <p>Placeholder for AI capabilities.</p>
+        <h1>AI Assistant: {activeNode?.name || 'Unknown'}</h1>
+        <p>AI capabilities tailored for {activeNode?.name || 'this item'}.</p>
       </div>
     {:else if activeTab === 'Profile'}
       <div class="content-padded">
         <h1>User Profile</h1>
-        <p>Placeholder for User profile information.</p>
+        <p>User profile information.</p>
       </div>
     {/if}
   </main>
