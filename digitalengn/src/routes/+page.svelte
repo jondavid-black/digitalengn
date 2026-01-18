@@ -6,7 +6,7 @@
   let isPinned = false;
   let forceShowToolbar = false;
   let showUserDropdown = false;
-  let theme = 'light';
+  let theme = 'dark';
 
   const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc"];
 
@@ -40,19 +40,14 @@
   function toggleTheme() {
     theme = theme === 'light' ? 'dark' : 'light';
   }
+
+  $: if (typeof document !== 'undefined') {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }
 </script>
 
-<svelte:body class:dark={theme === 'dark'} />
-
 <style>
-  :global(body) {
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    transition: background-color 0.3s, color 0.3s;
-
+  :global(:root) {
     --bg-color: #ffffff;
     --text-color: #333333;
     --toolbar-bg: #ffffff;
@@ -63,7 +58,7 @@
     --item-text: #666666;
   }
 
-  :global(body.dark) {
+  :global(html.dark) {
     --bg-color: #1a1a1a;
     --text-color: #f0f0f0;
     --toolbar-bg: #2d2d2d;
@@ -72,6 +67,15 @@
     --card-bg: #2d2d2d;
     --item-hover: #3d3d3d;
     --item-text: #aaaaaa;
+  }
+
+  :global(body) {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
   }
 
   .app-container {
