@@ -36,6 +36,6 @@ declare module "$app/types" {
 		};
 		Pathname(): "/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): "/shared/branding/.gitkeep" | "/shared/branding/engn_logo_core_tiny_transparent.png" | "/shared/favicon.png" | "/shared/favicon.svg" | string & {};
+		Asset(): "/shared/branding/.gitkeep" | "/shared/branding/engn_logo_core_tiny_transparent.png" | "/shared/engine.svg" | "/shared/favicon.png" | "/shared/favicon.svg" | string & {};
 	}
 }
