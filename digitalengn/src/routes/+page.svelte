@@ -3,7 +3,7 @@
   import EmbeddedPage from "$lib/components/EmbeddedPage.svelte";
 
   type NodeType = 'Portfolio' | 'Program' | 'Project';
-  type DataSet = 'Hierarchy' | 'Budget' | 'Organization' | 'Forecast' | 'Scope' | 'Risk' | 'Schedule' | 'Actuals' | 'Material' | 'Travel' | 'General' | 'SE' | 'HW' | 'SW';
+  type DataSet = 'Hierarchy' | 'BizMgnt' | 'Organization' | 'Scope' | 'Risk' | 'Schedule' | 'Material' | 'Travel' | 'General' | 'SE' | 'HW' | 'SW';
 
   interface Repository {
     url: string;
@@ -31,7 +31,7 @@
   let showUserDropdown = false;
   let theme = 'dark';
 
-  const ALL_DATA_SETS: DataSet[] = ['Hierarchy', 'Budget', 'Organization', 'Forecast', 'Scope', 'Risk', 'Schedule', 'Actuals', 'Material', 'Travel', 'General', 'SE', 'HW', 'SW'];
+  const ALL_DATA_SETS: DataSet[] = ['Hierarchy', 'BizMgnt', 'Organization', 'Scope', 'Risk', 'Schedule', 'Material', 'Travel', 'General', 'SE', 'HW', 'SW'];
 
   // State for Hierarchy
   let nodes: Node[] = [
@@ -64,10 +64,8 @@
     { id: 'Dashboard', icon: '📊' },
     { id: 'Scope', icon: '🎯' },
     { id: 'Organization', icon: '👥' },
-    { id: 'Budget', icon: '💰' },
-    { id: 'Actuals', icon: '📈' },
+    { id: 'BizMgnt', icon: '💼' },
     { id: 'Risk & Opportunity', icon: '⚠️' },
-    { id: 'Forecast', icon: '🔮' },
     { id: 'Schedule', icon: '📅' },
     { id: 'Material', icon: '📦' },
     { id: 'Travel', icon: '✈️' }
