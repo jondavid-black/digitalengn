@@ -42,6 +42,8 @@
   }
 </script>
 
+<svelte:body class:dark={theme === 'dark'} />
+
 <style>
   :global(body) {
     margin: 0;
@@ -50,9 +52,7 @@
     background-color: var(--bg-color);
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
-  }
 
-  .app-container {
     --bg-color: #ffffff;
     --text-color: #333333;
     --toolbar-bg: #ffffff;
@@ -61,13 +61,9 @@
     --card-bg: #ffffff;
     --item-hover: #f0f0f0;
     --item-text: #666666;
-    
-    min-height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
   }
 
-  .app-container.dark {
+  :global(body.dark) {
     --bg-color: #1a1a1a;
     --text-color: #f0f0f0;
     --toolbar-bg: #2d2d2d;
@@ -76,6 +72,12 @@
     --card-bg: #2d2d2d;
     --item-hover: #3d3d3d;
     --item-text: #aaaaaa;
+  }
+
+  .app-container {
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
   }
 
   .login-container {
@@ -157,6 +159,7 @@
     right: 0;
     height: 10px;
     z-index: 1001;
+    background: transparent;
   }
 
   .toolbar-inner {
@@ -288,7 +291,7 @@
   }
 </style>
 
-<div class="app-container" class:dark={theme === 'dark'}>
+<div class="app-container">
 {#if !isLoggedIn}
   <div class="login-container">
     <div class="login-box">
