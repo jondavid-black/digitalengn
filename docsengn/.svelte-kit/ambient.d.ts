@@ -26,6 +26,7 @@
  * ```
  */
 declare module '$env/static/private' {
+	export const PYTHON_BASIC_REPL: string;
 	export const LESSOPEN: string;
 	export const USER: string;
 	export const npm_config_user_agent: string;
@@ -45,6 +46,8 @@ declare module '$env/static/private' {
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const npm_config_userconfig: string;
 	export const npm_config_local_prefix: string;
+	export const PYDEVD_DISABLE_FILE_VALIDATION: string;
+	export const BUNDLED_DEBUGPY_PATH: string;
 	export const VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 	export const DBUS_SESSION_BUS_ADDRESS: string;
 	export const COLORTERM: string;
@@ -71,7 +74,9 @@ declare module '$env/static/private' {
 	export const KUBECONFIG: string;
 	export const XDG_RUNTIME_DIR: string;
 	export const DISPLAY: string;
+	export const VSCODE_DEBUGPY_ADAPTER_ENDPOINTS: string;
 	export const LANG: string;
+	export const PYTHONSTARTUP: string;
 	export const LS_COLORS: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
 	export const TERM_PROGRAM: string;
@@ -126,6 +131,7 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
+		PYTHON_BASIC_REPL: string;
 		LESSOPEN: string;
 		USER: string;
 		npm_config_user_agent: string;
@@ -145,6 +151,8 @@ declare module '$env/dynamic/private' {
 		VSCODE_GIT_ASKPASS_NODE: string;
 		npm_config_userconfig: string;
 		npm_config_local_prefix: string;
+		PYDEVD_DISABLE_FILE_VALIDATION: string;
+		BUNDLED_DEBUGPY_PATH: string;
 		VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 		DBUS_SESSION_BUS_ADDRESS: string;
 		COLORTERM: string;
@@ -171,7 +179,9 @@ declare module '$env/dynamic/private' {
 		KUBECONFIG: string;
 		XDG_RUNTIME_DIR: string;
 		DISPLAY: string;
+		VSCODE_DEBUGPY_ADAPTER_ENDPOINTS: string;
 		LANG: string;
+		PYTHONSTARTUP: string;
 		LS_COLORS: string;
 		VSCODE_GIT_IPC_HANDLE: string;
 		TERM_PROGRAM: string;
