@@ -86,7 +86,7 @@ spec:
         - name: KC_HOSTNAME_STRICT
           value: "true"
         - name: KC_HOSTNAME_BACKCHANNEL_DYNAMIC
-          value: "true"
+          value: "false"
         - name: KC_HTTP_ENABLED
           value: "true"
         - name: KC_PROXY_HEADERS
