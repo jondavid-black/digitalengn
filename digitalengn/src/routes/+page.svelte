@@ -356,7 +356,7 @@
     font-weight: bold;
   }
 
-  .pin-btn, .theme-btn {
+  .pin-btn, .theme-btn, .search-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -364,7 +364,7 @@
     color: var(--item-text);
   }
 
-  .pin-btn:hover, .theme-btn:hover {
+  .pin-btn:hover, .theme-btn:hover, .search-btn:hover {
     opacity: 1;
     color: var(--text-color);
     background: var(--item-hover);
@@ -704,6 +704,13 @@
 
       <div class="toolbar-right">
         <button 
+          class="toolbar-item search-btn" 
+          on:click={() => activeTab = 'Search'}
+          title="Search"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <button 
           class="toolbar-item theme-btn" 
           on:click={toggleTheme}
           title={theme === 'light' ? "Switch to Dark Mode" : "Switch to Light Mode"}
@@ -874,6 +881,20 @@
       <div class="content-padded">
         <h1>User Profile</h1>
         <p>User profile information.</p>
+      </div>
+    {:else if activeTab === 'Search'}
+      <div class="content-padded">
+        <h1>Search</h1>
+        <div class="card">
+          <input 
+            type="text" 
+            placeholder="Search workspaces, projects, or documents..." 
+            style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--toolbar-border); background: var(--bg-color); color: var(--text-color);"
+          />
+          <div style="margin-top: 1.5rem; color: var(--item-text);">
+            Enter a search term to find relevant content.
+          </div>
+        </div>
       </div>
     {/if}
   </main>
