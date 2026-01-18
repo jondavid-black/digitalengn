@@ -21,6 +21,7 @@ launch = "launch:main"
 shutdown = "shutdown:main"
 clean = "clean:main"
 build = "build:main"
+rebuild = "rebuild:main"
 
 [build-system]
 requires = ["setuptools>=61.0"]
