@@ -12,6 +12,11 @@
   let theme = 'dark';
 
   const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc", "AI"];
+  
+  const tabUrls: Record<string, string> = {
+    'SE': 'https://www.google.com/search?igu=1',
+    'Dev': 'https://svelte.dev'
+  };
 
   function handleLogin() {
     if (username === 'admin' && password === 'admin') {
@@ -38,6 +43,11 @@
   function handleProfile() {
     activeTab = 'Profile';
     showUserDropdown = false;
+  }
+
+  function handleLaunch(url: string, e: MouseEvent) {
+    e.stopPropagation();
+    window.open(url, '_blank');
   }
 
   function toggleTheme() {
@@ -202,6 +212,26 @@
     transition: all 0.2s;
     background: none;
     border: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .launch-icon {
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    color: inherit;
+  }
+
+  .launch-icon:hover {
+    opacity: 1;
+    color: #007bff;
   }
 
   .toolbar-item:hover {
@@ -331,6 +361,17 @@
             on:click={() => activeTab = tab}
           >
             {tab}
+            {#if tabUrls[tab]}
+              {@const url = tabUrls[tab]}
+              <button 
+                class="launch-icon" 
+                on:click={(e) => handleLaunch(url, e)}
+                title="Open in new tab"
+                aria-label={`Open ${tab} in new tab`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              </button>
+            {/if}
           </button>
         {/each}
       </div>
