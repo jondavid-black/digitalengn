@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { FileText, Folder, RefreshCw } from 'lucide-svelte';
+  import { FileText, Folder, RefreshCw, FilePlus, FolderPlus, MonitorPlay } from 'lucide-svelte';
   import { activeTabId, tabs } from '$lib/stores';
 
   let files = [];
@@ -21,6 +21,54 @@
     }
   }
 
+  async function createFolder() {
+    const name = prompt('Folder Name:');
+    if (!name) return;
+    
+    try {
+      const res = await fetch('/api/files', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: name, message: `Create folder ${name}` })
+      });
+      if (!res.ok) throw new Error('Failed to create folder');
+      await loadFiles();
+    } catch (e) {
+      alert(e.message);
+    }
+  }
+
+  async function createFile(type) {
+    const name = prompt(`File Name (e.g., my-doc${type === 'slides' ? '.slides.md' : '.md'}):`);
+    if (!name) return;
+    
+    // Ensure extension
+    let filename = name;
+    if (type === 'slides' && !filename.endsWith('.md')) filename += '.md'; // Slidev uses .md too usually
+    if (type === 'markdown' && !filename.endsWith('.md')) filename += '.md';
+
+    const content = type === 'slides' 
+      ? '# Slide 1\n\nWelcome to Slidev!\n\n---\n\n# Slide 2\n\nSecond slide' 
+      : '# New Document\n\nStart writing...';
+
+    try {
+      const res = await fetch('/api/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          filename, 
+          content,
+          message: `Create ${filename}` 
+        })
+      });
+      if (!res.ok) throw new Error('Failed to create file');
+      await loadFiles();
+      await openFile(filename);
+    } catch (e) {
+      alert(e.message);
+    }
+  }
+
   async function openFile(filename) {
     // Check if tab exists
     let tab = $tabs.find(t => t.title === filename); // Using title as ID/Key for now roughly
@@ -35,7 +83,15 @@
       const { content } = await res.json();
 
       const newId = crypto.randomUUID();
-      const type = filename.endsWith('.md') ? 'markdown' : 'slides'; // Simple heuristic
+      // Simple heuristic for slides: if filename contains 'slide' or we decide via metadata later.
+      // For now, I'll rely on a naming convention or content check? 
+      // Prompt said "Tailored to the type of open document (i.e. document vs slide)".
+      // I'll assume if created as slide (via logic above) it might be hard to distinguish just by .md
+      // But Slidev files are .md.
+      // I'll check if content contains '---' separator as a hint, or just default to markdown.
+      // Or maybe creating a file with specific extension like .slides.md is better.
+      const isSlides = filename.includes('.slides') || content.includes('\n---\n'); 
+      const type = isSlides ? 'slides' : 'markdown';
       
       tabs.update(t => [...t, { 
         id: newId, 
@@ -54,9 +110,18 @@
 </script>
 
 <div class="flex flex-col h-full">
-  <div class="flex items-center justify-between px-2 py-2">
-    <span class="text-xs font-semibold text-zinc-500 uppercase">Files</span>
-    <button on:click={loadFiles} class="text-zinc-500 hover:text-zinc-300" title="Refresh">
+  <div class="flex items-center gap-1 px-2 py-2 border-b border-zinc-800 mb-2">
+    <button on:click={() => createFile('markdown')} class="p-1.5 text-zinc-400 hover:text-blue-400 hover:bg-zinc-800 rounded transition-colors" title="New Document">
+      <FilePlus size={16} />
+    </button>
+    <button on:click={() => createFile('slides')} class="p-1.5 text-zinc-400 hover:text-green-400 hover:bg-zinc-800 rounded transition-colors" title="New Slides">
+      <MonitorPlay size={16} />
+    </button>
+    <button on:click={createFolder} class="p-1.5 text-zinc-400 hover:text-yellow-400 hover:bg-zinc-800 rounded transition-colors" title="New Folder">
+      <FolderPlus size={16} />
+    </button>
+    <div class="flex-1"></div>
+    <button on:click={loadFiles} class="p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded transition-colors" title="Refresh">
       <RefreshCw size={14} class={loading ? 'animate-spin' : ''} />
     </button>
   </div>
