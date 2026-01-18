@@ -28,15 +28,41 @@ export class GitService {
     }
   }
 
-  async listFiles(): Promise<{ name: string; type: 'file' | 'folder' }[]> {
+  async listFiles(subpath: string = ''): Promise<{ name: string; type: 'file' | 'folder' }[]> {
     await this.init();
-    const entries = await fs.readdir(this.contentDir, { withFileTypes: true });
-    return entries
-      .filter(entry => !entry.name.startsWith('.git'))
-      .map(entry => ({
-        name: entry.name,
-        type: entry.isDirectory() ? 'folder' : 'file'
-      }));
+    
+    // Validate path
+    const safeSubpath = path.resolve(this.contentDir, subpath);
+    if (!safeSubpath.startsWith(this.contentDir)) {
+      throw new Error('Invalid path');
+    }
+
+    try {
+      const entries = await fs.readdir(safeSubpath, { withFileTypes: true });
+      return entries
+        .filter(entry => !entry.name.startsWith('.git'))
+        .map(entry => ({
+          name: entry.name,
+          type: entry.isDirectory() ? 'folder' : 'file'
+        }));
+    } catch (e) {
+      if ((e as any).code === 'ENOENT') return [];
+      throw e;
+    }
+  }
+
+  async createFolder(folderPath: string, message: string): Promise<void> {
+    await this.init();
+    const safePath = path.resolve(this.contentDir, folderPath);
+    if (!safePath.startsWith(this.contentDir)) {
+      throw new Error('Invalid path');
+    }
+
+    await fs.mkdir(safePath, { recursive: true });
+    // Create .gitkeep to ensure folder is tracked by git
+    await fs.writeFile(path.join(safePath, '.gitkeep'), '', 'utf-8');
+    await this.git.add(path.join(folderPath, '.gitkeep'));
+    await this.git.commit(message || `Create folder ${folderPath}`);
   }
 
   async readFile(filename: string): Promise<string> {
@@ -54,6 +80,9 @@ export class GitService {
     if (!safePath.startsWith(this.contentDir)) {
       throw new Error('Invalid path');
     }
+
+    // Ensure directory exists
+    await fs.mkdir(path.dirname(safePath), { recursive: true });
 
     await fs.writeFile(safePath, content, 'utf-8');
     await this.git.add(filename);

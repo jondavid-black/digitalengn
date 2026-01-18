@@ -33,4 +33,17 @@ describe('GitService', () => {
     const content = await service.readFile('test.md');
     expect(content).toBe('# Hello');
   });
+
+  it('should create folders and save nested files', async () => {
+    await service.createFolder('folder1', 'Create folder');
+    const files = await service.listFiles();
+    expect(files.find(f => f.name === 'folder1')?.type).toBe('folder');
+
+    await service.saveFile('folder1/nested.md', '# Nested', 'Nested commit');
+    const nestedFiles = await service.listFiles('folder1');
+    expect(nestedFiles.find(f => f.name === 'nested.md')).toBeDefined();
+    
+    const content = await service.readFile('folder1/nested.md');
+    expect(content).toBe('# Nested');
+  });
 });
