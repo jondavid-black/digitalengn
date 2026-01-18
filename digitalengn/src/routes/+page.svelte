@@ -284,9 +284,7 @@
   .content {
     margin-top: 20px;
     padding: 0;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
     transition: margin-top 0.3s ease-in-out;
     height: calc(100vh - 20px);
     display: flex;
@@ -300,6 +298,11 @@
 
   .content-padded {
     padding: 2rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .embedded-frame {
