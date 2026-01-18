@@ -5,8 +5,9 @@
   let activeTab = 'Home';
   let isPinned = false;
   let forceShowToolbar = false;
+  let showUserDropdown = false;
 
-  const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc", "User"];
+  const tabs = ["Home", "PM", "Plan", "SE", "UX", "Dev", "Doc"];
 
   function handleLogin() {
     if (username === 'admin' && password === 'admin') {
@@ -27,6 +28,12 @@
     activeTab = 'Home';
     isPinned = false;
     forceShowToolbar = false;
+    showUserDropdown = false;
+  }
+
+  function handleProfile() {
+    activeTab = 'Profile';
+    showUserDropdown = false;
   }
 </script>
 
@@ -119,6 +126,31 @@
   .toolbar-inner {
     display: flex;
     gap: 1.5rem;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 1rem;
+    position: relative;
+    justify-content: center;
+  }
+
+  .toolbar-left {
+    position: absolute;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .toolbar-center {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .toolbar-right {
+    position: absolute;
+    right: 1rem;
+    display: flex;
+    align-items: center;
   }
 
   .toolbar-item {
@@ -158,6 +190,57 @@
     opacity: 1;
   }
 
+  .avatar-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .avatar-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #007bff;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+  }
+
+  .user-dropdown {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    min-width: 120px;
+    z-index: 1002;
+  }
+
+  .dropdown-item {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    color: #333;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .dropdown-item:hover {
+    background: #f5f5f5;
+  }
+
   .content {
     margin-top: 20px;
     padding: 2rem;
@@ -169,20 +252,6 @@
 
   .content.shifted {
     margin-top: 60px;
-  }
-
-  .logout-btn {
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    background: none;
-    border: 1px solid #ccc;
-    padding: 2px 8px;
-    border-radius: 4px;
-    color: #666;
-    z-index: 1001;
   }
 </style>
 
@@ -199,28 +268,44 @@
   <div class="toolbar-trigger"></div>
   <nav class="toolbar" class:force-show={forceShowToolbar} class:pinned={isPinned}>
     <div class="toolbar-inner">
-      <button 
-        class="toolbar-item pin-btn" 
-        class:active={isPinned}
-        on:click={() => isPinned = !isPinned}
-        title={isPinned ? "Unpin Toolbar" : "Pin Toolbar"}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill={isPinned ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.79-.9A2 2 0 0 1 15 10.76V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.76a2 2 0 0 1-1.1 1.79l-1.79.9A2 2 0 0 0 5 15.24Z"></path></svg>
-      </button>
-
-      {#each tabs as tab}
+      <div class="toolbar-left">
         <button 
-          class="toolbar-item" 
-          class:active={activeTab === tab}
-          on:click={() => activeTab = tab}
+          class="toolbar-item pin-btn" 
+          class:active={isPinned}
+          on:click={() => isPinned = !isPinned}
+          title={isPinned ? "Unpin Toolbar" : "Pin Toolbar"}
         >
-          {tab}
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill={isPinned ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.79-.9A2 2 0 0 1 15 10.76V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.76a2 2 0 0 1-1.1 1.79l-1.79.9A2 2 0 0 0 5 15.24Z"></path></svg>
         </button>
-      {/each}
+      </div>
+
+      <div class="toolbar-center">
+        {#each tabs as tab}
+          <button 
+            class="toolbar-item" 
+            class:active={activeTab === tab}
+            on:click={() => activeTab = tab}
+          >
+            {tab}
+          </button>
+        {/each}
+      </div>
+
+      <div class="toolbar-right">
+        <div class="avatar-container">
+          <button class="avatar-circle" on:click={() => showUserDropdown = !showUserDropdown}>
+            AD
+          </button>
+          {#if showUserDropdown}
+            <div class="user-dropdown">
+              <button class="dropdown-item" on:click={handleProfile}>Profile</button>
+              <button class="dropdown-item" on:click={handleLogout}>Logout</button>
+            </div>
+          {/if}
+        </div>
+      </div>
     </div>
   </nav>
-
-  <button class="logout-btn" on:click={handleLogout}>Logout</button>
 
   <main class="content" class:shifted={isPinned}>
     {#if activeTab === 'Home'}
@@ -244,9 +329,9 @@
     {:else if activeTab === 'Doc'}
       <h1>Documentation</h1>
       <p>Placeholder for Documentation capabilities.</p>
-    {:else if activeTab === 'User'}
-      <h1>User Settings</h1>
-      <p>Placeholder for User settings and profile.</p>
+    {:else if activeTab === 'Profile'}
+      <h1>User Profile</h1>
+      <p>Placeholder for User profile information.</p>
     {/if}
   </main>
 {/if}
