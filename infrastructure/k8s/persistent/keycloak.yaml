@@ -82,7 +82,7 @@ spec:
         - name: KC_BOOTSTRAP_ADMIN_PASSWORD
           value: "admin"
         - name: KC_HOSTNAME
-          value: "https://localhost:8080"
+          value: "https://localhost:8080/auth"
         - name: KC_HOSTNAME_STRICT
           value: "true"
         - name: KC_HOSTNAME_BACKCHANNEL_DYNAMIC
