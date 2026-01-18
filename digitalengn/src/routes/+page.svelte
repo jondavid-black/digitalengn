@@ -3,15 +3,21 @@
   import EmbeddedPage from "$lib/components/EmbeddedPage.svelte";
 
   type NodeType = 'Portfolio' | 'Program' | 'Project';
+  type DataSet = 'Hierarchy' | 'Budget' | 'Organization' | 'Forecast' | 'Scope' | 'Risk' | 'Schedule' | 'Actuals' | 'Material' | 'Travel' | 'General';
+
+  interface Repository {
+    url: string;
+    dataSets: DataSet[];
+  }
 
   interface Node {
     id: string;
     name: string;
     type: NodeType;
-    gitRepoUrl: string;
     description: string;
     parentId: string | null;
     enabledFeatures: string[];
+    repositories: Repository[];
   }
 
   let username = '';
@@ -25,16 +31,20 @@
   let showUserDropdown = false;
   let theme = 'dark';
 
+  const ALL_DATA_SETS: DataSet[] = ['Hierarchy', 'Budget', 'Organization', 'Forecast', 'Scope', 'Risk', 'Schedule', 'Actuals', 'Material', 'Travel', 'General'];
+
   // State for Hierarchy
   let nodes: Node[] = [
     {
       id: 'root',
       name: 'Global Portfolio',
       type: 'Portfolio',
-      gitRepoUrl: '',
       description: 'The top level portfolio for all operations.',
       parentId: null,
-      enabledFeatures: ['PM', 'Plan', 'SE', 'UX', 'Dev', 'Doc', 'AI']
+      enabledFeatures: ['PM', 'Plan', 'SE', 'UX', 'Dev', 'Doc', 'AI'],
+      repositories: [
+        { url: 'https://github.com/org/root-repo', dataSets: [...ALL_DATA_SETS] }
+      ]
     }
   ];
   let activeNodeId = 'root';
@@ -78,10 +88,12 @@
       id: Math.random().toString(36).substr(2, 9),
       name,
       type,
-      gitRepoUrl: '',
       description: '',
       parentId: currentNavNodeId || null,
-      enabledFeatures: []
+      enabledFeatures: [],
+      repositories: [
+        { url: '', dataSets: [...ALL_DATA_SETS] }
+      ]
     };
 
     nodes = [...nodes, newNode];
@@ -131,6 +143,37 @@
     } else {
       node.enabledFeatures = node.enabledFeatures.filter(f => f !== feature);
     }
+    nodes = [...nodes];
+  }
+
+  function toggleDataSet(repoIndex: number, dataSet: DataSet) {
+    if (!activeNode) return;
+    const repo = activeNode.repositories[repoIndex];
+    if (!repo) return;
+    const index = repo.dataSets.indexOf(dataSet);
+    if (index === -1) {
+      repo.dataSets = [...repo.dataSets, dataSet];
+    } else {
+      repo.dataSets = repo.dataSets.filter(d => d !== dataSet);
+    }
+    nodes = [...nodes];
+  }
+
+  function addRepository() {
+    if (!activeNode) return;
+    activeNode.repositories = [...activeNode.repositories, { url: '', dataSets: [] }];
+    nodes = [...nodes];
+  }
+
+  function removeRepository(index: number) {
+    if (!activeNode) return;
+    activeNode.repositories = activeNode.repositories.filter((_, i) => i !== index);
+    nodes = [...nodes];
+  }
+
+  function updateRepoUrl(index: number, url: string) {
+    if (!activeNode || !activeNode.repositories[index]) return;
+    activeNode.repositories[index].url = url;
     nodes = [...nodes];
   }
 
@@ -804,8 +847,40 @@
             </div>
 
             <div class="card" style="margin-top: 1.5rem;">
-              <h3>Git Repository</h3>
-              <p>{activeNode?.gitRepoUrl || 'No repository linked.'}</p>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3>Git Repositories</h3>
+                <button class="btn-small" on:click={addRepository}>+ Add Repo</button>
+              </div>
+              
+              {#each activeNode?.repositories || [] as repo, i}
+                <div style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid var(--toolbar-border); border-radius: 8px;">
+                  <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <input 
+                      type="text" 
+                      placeholder="Repository URL" 
+                      value={repo.url} 
+                      on:input={(e) => updateRepoUrl(i, e.currentTarget.value)}
+                      style="flex: 1; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--toolbar-border); background: var(--bg-color); color: var(--text-color);"
+                    />
+                    <button class="btn-small btn-delete" on:click={() => removeRepository(i)}>Delete</button>
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    {#each ALL_DATA_SETS as ds}
+                      <label style="font-size: 0.75rem; display: flex; align-items: center; gap: 4px;">
+                        <input 
+                          type="checkbox" 
+                          checked={repo.dataSets.includes(ds)} 
+                          on:change={() => toggleDataSet(i, ds)}
+                        />
+                        {ds}
+                      </label>
+                    {/each}
+                  </div>
+                </div>
+              {/each}
+              {#if (activeNode?.repositories || []).length === 0}
+                <p style="color: var(--item-text); font-size: 0.9rem;">No repositories linked.</p>
+              {/if}
             </div>
           </div>
         {:else if activeSidebarTab === 'Workspaces'}
