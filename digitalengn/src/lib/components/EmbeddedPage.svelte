@@ -8,8 +8,8 @@
     width: 100%;
     height: 100%;
     border: none;
-    background: white;
+    background: transparent;
   }
 </style>
 
-<iframe {src} {title} class="embedded-frame"></iframe>
+<iframe {src} {title} class="embedded-frame" allowfullscreen loading="lazy"></iframe>

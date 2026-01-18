@@ -394,7 +394,7 @@
         <p>Placeholder for UX capabilities.</p>
       </div>
     {:else if activeTab === 'Dev'}
-      <EmbeddedPage src="https://github.com" title="Development" />
+      <EmbeddedPage src="https://svelte.dev" title="Development" />
     {:else if activeTab === 'Doc'}
       <div class="content-padded">
         <h1>Documentation</h1>
