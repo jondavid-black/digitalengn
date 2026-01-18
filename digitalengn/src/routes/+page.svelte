@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { getInitials } from "$lib/utils"
+  import EmbeddedPage from "$lib/components/EmbeddedPage.svelte";
+
   let username = '';
   let password = '';
   let isLoggedIn = false;
@@ -304,13 +307,6 @@
     width: 100%;
     box-sizing: border-box;
   }
-
-  .embedded-frame {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: white;
-  }
 </style>
 
 <div class="app-container">
@@ -391,17 +387,14 @@
         <p>Placeholder for Planning capabilities.</p>
       </div>
     {:else if activeTab === 'SE'}
-      <iframe src="https://www.google.com/search?igu=1" title="Software Engineering" class="embedded-frame"></iframe>
+      <EmbeddedPage src="https://www.google.com/search?igu=1" title="Software Engineering" />
     {:else if activeTab === 'UX'}
       <div class="content-padded">
         <h1>User Experience</h1>
         <p>Placeholder for UX capabilities.</p>
       </div>
     {:else if activeTab === 'Dev'}
-      <div class="content-padded">
-        <h1>Development</h1>
-        <p>Placeholder for Development capabilities.</p>
-      </div>
+      <EmbeddedPage src="https://github.com" title="Development" />
     {:else if activeTab === 'Doc'}
       <div class="content-padded">
         <h1>Documentation</h1>
