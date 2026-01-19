@@ -12,6 +12,9 @@ describe("editorConfig", () => {
     expect(extensionNames).toContain("characterCount");
     expect(extensionNames).toContain("typography");
     expect(extensionNames).toContain("underline");
+    expect(extensionNames).toContain("textStyle");
+    expect(extensionNames).toContain("color");
+    expect(extensionNames).toContain("listItem");
     expect(extensionNames).toContain("markdown");
 
     // Check StarterKit presence (it's a wrapper, name might be 'starterKit' or similar)

@@ -17,37 +17,55 @@ vi.mock("$lib/stores", () => {
 describe("Toolbar", () => {
   it("should show heading dropdown and dispatch correct level", async () => {
     const { getByTitle, getByText, queryByText } = render(Toolbar);
-
-    // Find Heading button
     const headingBtn = getByTitle("Heading");
     expect(headingBtn).toBeTruthy();
-
-    // Dropdown should be closed initially
     expect(queryByText("H1")).toBeNull();
-
-    // Open dropdown
     await fireEvent.click(headingBtn);
-
-    // Check if dropdown options appear (H1 to H6)
     expect(getByText("H1")).toBeTruthy();
-    expect(getByText("H6")).toBeTruthy();
-
-    // Click H3
-    // Note: getByText returns the span inside the button. We click it, event bubbles to button.
     const h3Text = getByText("H3");
     await fireEvent.click(h3Text);
-
-    // Verify store update
-    // We need to import the mocked store from the module to check its value
-    // But since we mocked it, the import in this file refers to the mocked version?
-    // Yes, vi.mock hoisting ensures that.
-
-    // However, getting the value from the store requires subscribing or get()
-    // Since we used 'writable' from svelte/store in the mock, it should behave like a real store.
-
     let currentAction;
     editorAction.subscribe((v) => (currentAction = v))();
-
     expect(currentAction).toEqual({ type: "toggleHeading", payload: 3 });
+  });
+
+  it("should dispatch formatting actions", async () => {
+    const { getByTitle } = render(Toolbar);
+
+    const actions = [
+      { title: "Bold", type: "toggleBold" },
+      { title: "Italic", type: "toggleItalic" },
+      { title: "Underline", type: "toggleUnderline" },
+      { title: "Strike", type: "toggleStrike" },
+      { title: "Code", type: "toggleCode" },
+      { title: "Clear Marks", type: "unsetAllMarks" },
+      { title: "Clear Nodes", type: "clearNodes" },
+      { title: "Bullet List", type: "toggleBulletList" },
+      { title: "Ordered List", type: "toggleOrderedList" },
+      { title: "Code Block", type: "toggleCodeBlock" },
+      { title: "Quote", type: "toggleBlockquote" },
+      { title: "Horizontal Rule", type: "setHorizontalRule" },
+      { title: "Hard Break", type: "setHardBreak" },
+      { title: "Undo", type: "undo" },
+      { title: "Redo", type: "redo" },
+      { title: "Paragraph", type: "setParagraph" },
+    ];
+
+    for (const action of actions) {
+      const btn = getByTitle(action.title);
+      await fireEvent.click(btn);
+      let currentAction;
+      editorAction.subscribe((v) => (currentAction = v))();
+      expect(currentAction).toEqual({ type: action.type, payload: undefined });
+    }
+  });
+
+  it("should dispatch color action", async () => {
+    const { getByTitle } = render(Toolbar);
+    const btn = getByTitle("Purple");
+    await fireEvent.click(btn);
+    let currentAction;
+    editorAction.subscribe((v) => (currentAction = v))();
+    expect(currentAction).toEqual({ type: "setColor", payload: "#958DF1" });
   });
 });

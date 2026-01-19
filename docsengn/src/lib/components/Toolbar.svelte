@@ -27,7 +27,19 @@
     Underline,
     AlignLeft,
     AlignCenter,
-    AlignRight
+    AlignRight,
+    Strikethrough,
+    Code,
+    RemoveFormatting,
+    Eraser,
+    List,
+    ListOrdered,
+    SquareCode,
+    Minus,
+    WrapText,
+    Undo,
+    Redo,
+    Palette
   } from 'lucide-svelte';
   import { editorAction } from '$lib/stores';
 
@@ -69,6 +81,32 @@
         <button on:click={() => dispatch('toggleUnderline')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Underline">
           <Underline size={18} />
         </button>
+        <button on:click={() => dispatch('toggleStrike')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Strike">
+          <Strikethrough size={18} />
+        </button>
+        <button on:click={() => dispatch('toggleCode')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Code">
+          <Code size={18} />
+        </button>
+        <button on:click={() => dispatch('setColor', '#958DF1')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Purple">
+          <Palette size={18} color="#958DF1" />
+        </button>
+        <div class="w-px h-4 bg-zinc-800 mx-1"></div>
+        <button on:click={() => dispatch('unsetAllMarks')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Clear Marks">
+          <Eraser size={18} />
+        </button>
+        <button on:click={() => dispatch('clearNodes')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Clear Nodes">
+          <RemoveFormatting size={18} />
+        </button>
+      </div>
+
+      <!-- Lists Group -->
+      <div class="flex items-center gap-1 p-1 bg-zinc-950/50 rounded-lg border border-zinc-800/50">
+        <button on:click={() => dispatch('toggleBulletList')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Bullet List">
+          <List size={18} />
+        </button>
+        <button on:click={() => dispatch('toggleOrderedList')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Ordered List">
+          <ListOrdered size={18} />
+        </button>
       </div>
 
       <!-- Alignment Group -->
@@ -88,9 +126,9 @@
 
       <!-- Insert Group -->
       <div class="flex items-center gap-1">
-        <button on:click={() => dispatch('insertText')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Insert Text">
+        <button on:click={() => dispatch('setParagraph')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Paragraph">
           <Type size={18} />
-          <span class="hidden xl:inline">Text</span>
+          <span class="hidden xl:inline">Para</span>
         </button>
         <div class="relative">
           <button 
@@ -133,9 +171,33 @@
           <TableIcon size={18} />
           <span class="hidden xl:inline">Table</span>
         </button>
+        <button on:click={() => dispatch('toggleCodeBlock')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Code Block">
+          <SquareCode size={18} />
+          <span class="hidden xl:inline">Code</span>
+        </button>
         <button on:click={() => dispatch('toggleBlockquote')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Quote">
           <Quote size={18} />
           <span class="hidden xl:inline">Quote</span>
+        </button>
+        <button on:click={() => dispatch('setHorizontalRule')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Horizontal Rule">
+          <Minus size={18} />
+          <span class="hidden xl:inline">HR</span>
+        </button>
+        <button on:click={() => dispatch('setHardBreak')} class="flex items-center gap-1 px-2 py-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded text-sm" title="Hard Break">
+          <WrapText size={18} />
+          <span class="hidden xl:inline">Break</span>
+        </button>
+      </div>
+
+      <div class="w-px h-6 bg-zinc-800 mx-1"></div>
+
+      <!-- History Group -->
+      <div class="flex items-center gap-1">
+        <button on:click={() => dispatch('undo')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Undo">
+          <Undo size={18} />
+        </button>
+        <button on:click={() => dispatch('redo')} class="p-1.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded" title="Redo">
+          <Redo size={18} />
         </button>
       </div>
 
